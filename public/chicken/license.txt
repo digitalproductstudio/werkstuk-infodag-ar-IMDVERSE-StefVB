@@ -1,0 +1,11 @@
+Model Information:
+* title:	Chicken
+* source:	https://sketchfab.com/3d-models/chicken-98830a78e8c54354a7fbe5ca8346fbf9
+* author:	pooiloui2 (https://sketchfab.com/pooiloui2)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Chicken" (https://sketchfab.com/3d-models/chicken-98830a78e8c54354a7fbe5ca8346fbf9) by pooiloui2 (https://sketchfab.com/pooiloui2) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

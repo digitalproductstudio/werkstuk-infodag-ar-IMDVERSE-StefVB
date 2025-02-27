@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IMDVERSE</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+      gap: 40px;
+      background-color: #f4f4f4;
+      font-family: Arial, sans-serif;
+    }
+
+    .webcam-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    #puzzle-container {
+      display: grid;
+      grid-template-columns: repeat(2, 100px);
+      grid-template-rows: repeat(2, 100px);
+      gap: 5px;
+      border: 3px solid black;
+      padding: 10px;
+      background-color: white;
+      position: relative;
+    }
+
+    .grid-cell {
+      width: 100px;
+      height: 100px;
+      border: 2px solid gray;
+      background-color: lightgray;
+      position: relative;
+      transition: background-color 0.3s, border 0.3s;
+    }
+
+    .grid-cell.highlight {
+      background-color: yellow;
+      border: 3px solid orange;
+    }
+
+    .grid-cell.filled {
+      background-color: lightgreen;
+      border: 3px solid green;
+    }
+
+    .puzzle-piece {
+      width: 80px;
+      height: 80px;
+      background-color: red;
+      position: absolute;
+      cursor: pointer;
+      top: 250px;
+      display: none;
+      transition: left 0.2s, top 0.2s;
+    }
+
+    .puzzle-piece.active {
+      display: block;
+    }
+
+    #progress-bar {
+      width: 200px;
+      height: 20px;
+      background: lightgray;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 20px;
+    }
+
+    #progress {
+      height: 100%;
+      width: 0%;
+      background: green;
+    }
+
+    #winner-message {
+      display: none;
+      font-size: 24px;
+      font-weight: bold;
+      color: white;
+      background: green;
+      padding: 20px;
+      border-radius: 10px;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="webcam-wrapper">
+    <h1>IMD Puzzel Game</h1>
+    <div id="liveView">
+      <button id="webcamButton" class="mdc-button mdc-button--raised">
+        <span class="mdc-button__ripple"></span>
+        <span class="mdc-button__label">ENABLE WEBCAM</span>
+      </button>
+    </div>
+    <div id="ar-layers">
+      <video id="webcam" autoplay playsinline></video>
+      <canvas class="output_canvas" id="output_canvas"></canvas>
+    </div>
+    <div id="progress-bar">
+      <div id="progress"></div>
+    </div>
+  </div>
+
+  <div id="puzzle-container">
+    <div class="grid-cell" id="cell-1"></div>
+    <div class="grid-cell" id="cell-2"></div>
+    <div class="grid-cell" id="cell-3"></div>
+    <div class="grid-cell" id="cell-4"></div>
+  </div>
+
+  <div id="pieces">
+    <div class="puzzle-piece active" id="piece1" data-target="cell-1"></div>
+    <div class="puzzle-piece" id="piece2" data-target="cell-2"></div>
+    <div class="puzzle-piece" id="piece3" data-target="cell-3"></div>
+    <div class="puzzle-piece" id="piece4" data-target="cell-4"></div>
+  </div>
+
+  <div id="winner-message">Congratulations! You completed the puzzle! 🎉</div>
+
+  <script type="module" src="src/main.ts"></script>
+</body>
+
+</html>
