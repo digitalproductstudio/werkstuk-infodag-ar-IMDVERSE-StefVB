@@ -5,34 +5,32 @@
   <meta charset="UTF-8" />
   <link rel="icon" type="image/svg+xml" href="/vite.svg" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <!-- Canvas Confetti https://www.npmjs.com/package/canvas-confetti -->
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <!-- Canvas Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js" defer></script>
   <title>IMDVERSE</title>
 </head>
 
 <body>
-  <!-- Achtergrond overlay met animatie -->
+  <!-- Achtergrond overlay (voor glass blur) -->
   <div id="background-overlay"></div>
 
   <!-- Startmenu overlay -->
   <div id="start-menu">
     <h1>Welkom bij IMD Puzzel Game</h1>
-    <p>
-      Gebruik handtracking om de puzzelstukken op de juiste plaats te leggen.
-    </p>
-    <p>
-      Richt je hand op het puzzelstuk en beweeg naar het corresponderende vakje. Veel succes!
-    </p>
+    <p>Gebruik handtracking om de puzzelstukken op de juiste plaats te leggen.</p>
+    <p>Richt je hand op het puzzelstuk en beweeg naar het corresponderende vakje. Veel succes!</p>
     <button id="start-button">Start Spel</button>
   </div>
 
+  <!-- Webcam container -->
   <div class="webcam-wrapper">
     <h1>IMD Puzzel Game</h1>
     <div id="liveView">
-      <button id="webcamButton" class="mdc-button mdc-button--raised">
-        <span class="mdc-button__ripple"></span>
-        <span class="mdc-button__label">ENABLE WEBCAM</span>
-      </button>
+      <button id="webcamButton">ENABLE WEBCAM</button>
     </div>
     <div id="ar-layers">
       <video id="webcam" autoplay playsinline></video>
@@ -43,6 +41,7 @@
     </div>
   </div>
 
+  <!-- Puzzel container -->
   <div id="puzzle-container">
     <!-- Vier grid-cellen -->
     <div class="grid-cell" id="cell-1"></div>
@@ -51,40 +50,36 @@
     <div class="grid-cell" id="cell-4"></div>
   </div>
 
+  <!-- Puzzelstukken -->
   <div id="pieces">
-    <!-- Geen 'active' in de HTML, zodat de code de eerste stuk activeert -->
     <div class="puzzle-piece" id="piece1"></div>
     <div class="puzzle-piece" id="piece2"></div>
     <div class="puzzle-piece" id="piece3"></div>
     <div class="puzzle-piece" id="piece4"></div>
   </div>
 
+  <!-- Winnaarsbericht -->
   <div id="winner-message">
     <h2>Gefeliciteerd!</h2>
-    <p id="winner-text">
-      Je hebt de puzzel voltooid! 🎉
-    </p>
-    <div>
-      <button id="play-again-button">Opnieuw Spelen</button>
-      <!-- Social share container -->
-      <div id="social-share">
-        <!-- Voorbeeld: share-knoppen -->
-        <button id="share-facebook" class="share-btn">Facebook</button>
-        <button id="share-twitter" class="share-btn">Twitter</button>
-      </div>
+    <p id="winner-text">Je hebt de puzzel voltooid!</p>
+    <button id="play-again-button">Opnieuw Spelen</button>
+    <div id="social-share">
+      <button id="share-facebook" class="share-btn">Facebook</button>
+      <button id="share-twitter" class="share-btn">Twitter</button>
     </div>
   </div>
 
-  <!-- Score en timer -->
+  <!-- Score en Timer -->
   <div id="score-timer">
     <div id="timer">Tijd: 0s</div>
     <div id="score">Score: 0</div>
   </div>
 
-  <!-- Audio-elementen voor geluidseffecten -->
+  <!-- Audio-elementen -->
   <audio id="place-sound" src="/sounds/Piece-placed-on-board.mp3" preload="auto"></audio>
   <audio id="win-sound" src="/sounds/win.mp3" preload="auto"></audio>
 
+  <!-- Jouw TypeScript-bundel -->
   <script type="module" src="src/main.ts"></script>
 </body>
 

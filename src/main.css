@@ -1,12 +1,24 @@
 :root {
+  /* Kleuren en stylingvariabelen */
   --primary-color: #4caf50;
+  /* Hoofdkleur */
   --accent-color: #ff9800;
-  --bg-color: #ffffff;
-  --light-bg: #f4f4f4;
-  --text-color: #333333;
-  --border-radius: 8px;
+  /* Accentkleur */
+  --bg-gradient: linear-gradient(115deg,
+      rgba(56, 239, 125, 0.7),
+      rgba(39, 174, 96, 0.7),
+      rgba(29, 80, 40, 0.7));
+  /* Achtergrond */
+  --glass-bg: rgba(255, 255, 255, 0.1);
+  /* Glaseffect-achtergrond */
+  --glass-border: rgba(255, 255, 255, 0.3);
+  /* Glaseffect-rand */
+  --text-color: #fff;
+  --border-radius: 14px;
+  --box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
 }
 
+/* Basisreset */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -14,86 +26,27 @@
 }
 
 body {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
+  font-family: 'Poppins', sans-serif;
+  background: var(--bg-gradient);
   height: 100vh;
   overflow: hidden;
-  background-color: var(--light-bg);
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: var(--text-color);
   position: relative;
 }
 
-h1 {
-  font-size: 24px;
-  margin-bottom: 10px;
-  color: var(--primary-color);
-}
-
-.output {
-  display: none;
-  width: 100%;
-  font-size: calc(8px + 1.2vw);
-}
-
-.relative {
-  position: relative;
-}
-
-.webcam-wrapper {
-  position: relative;
-}
-
-#webcam {
-  width: auto;
-  height: 100%;
-  object-fit: cover;
-}
-
-.output_canvas {
-  z-index: 1;
-  position: absolute;
-  pointer-events: none;
-  width: 100%;
-  height: 100%;
-  left: 0;
-  top: 0;
-}
-
-#layer-3D {
-  z-index: 2;
-  position: absolute;
-  pointer-events: none;
-  width: 100%;
-  height: 100%;
-  left: 0;
-  top: 0;
-}
-
-/* Achtergrondoverlay met subtiele animatie */
+/* Semi-transparante, geblurde overlay voor Glassmorphism */
 #background-overlay {
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 1;
-  background: radial-gradient(circle at center,
-      rgba(255, 255, 255, 0.1),
-      transparent 70%) no-repeat;
-  animation: bgAnimation 10s infinite alternate;
-}
-
-@keyframes bgAnimation {
-  0% {
-    background-position: 0% 50%;
-  }
-
-  100% {
-    background-position: 100% 50%;
-  }
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 0;
 }
 
 /* Startmenu overlay */
@@ -101,111 +54,115 @@ h1 {
   position: absolute;
   top: 0;
   left: 0;
-  width: 105%;
-  height: 110%;
-  background: rgba(0, 0, 0, 2);
-  color: #fff;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.65);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  z-index: 999;
   text-align: center;
   padding: 20px;
 }
 
-#start-menu button {
-  padding: 10px 20px;
-  font-size: 18px;
-  margin-top: 20px;
-  background-color: var(--primary-color);
-  border: none;
-  border-radius: var(--border-radius);
-  cursor: pointer;
-  color: #fff;
+#start-menu h1 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
 }
 
-/* Webcam en info */
+#start-menu p {
+  font-size: 1rem;
+  max-width: 600px;
+  margin-bottom: 1rem;
+}
+
+#start-menu button {
+  background-color: var(--accent-color);
+  border: none;
+  border-radius: var(--border-radius);
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+  color: #fff;
+  margin-top: 1rem;
+  transition: background-color 0.3s;
+}
+
+#start-menu button:hover {
+  background-color: #ffab40;
+}
+
+/* Webcam-container met glass-effect */
 .webcam-wrapper {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background-color: var(--bg-color);
-  border-radius: var(--border-radius);
-  padding: 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  margin-right: 40px;
-  z-index: 2;
-  /* Zodat het boven de background-overlay staat */
-}
-
-/* Spelbord */
-#puzzle-container {
-  display: grid;
-  grid-template-columns: repeat(2, 120px);
-  grid-template-rows: repeat(2, 120px);
-  gap: 10px;
-  border: 3px solid var(--text-color);
-  padding: 15px;
-  background-color: var(--bg-color);
-  border-radius: var(--border-radius);
   position: relative;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  z-index: 2;
-  /* Ook boven de overlay */
-}
-
-.grid-cell {
-  width: 120px;
-  height: 120px;
-  border: 2px solid #ccc;
-  background-color: #e0e0e0;
+  backdrop-filter: blur(12px);
+  background: var(--glass-bg);
   border-radius: var(--border-radius);
-  position: relative;
-  transition: background-color 0.3s ease, border 0.3s ease;
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--box-shadow);
+  padding: 1.5rem;
+  z-index: 1;
+  margin-right: 2rem;
 }
 
-.grid-cell.highlight {
-  background-color: #fff9c4;
-  border: 3px solid var(--accent-color);
+.webcam-wrapper h1 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
 }
 
-.grid-cell.filled {
-  background-color: #c8e6c9;
-  border: 3px solid var(--primary-color);
-}
-
-.puzzle-piece {
-  width: 90px;
-  height: 90px;
+#liveView button {
   background-color: var(--primary-color);
+  border: none;
   border-radius: var(--border-radius);
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  cursor: pointer;
+  color: #fff;
+  transition: background-color 0.3s;
+}
+
+#liveView button:hover {
+  background-color: #66bb6a;
+}
+
+/* AR-layers */
+#ar-layers {
+  position: relative;
+  width: 320px;
+  height: 240px;
+  margin-top: 1rem;
+}
+
+#webcam {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: var(--border-radius);
+}
+
+#output_canvas {
   position: absolute;
-  z-index: 3;
-  cursor: grab;
-  top: 250px;
-  display: none;
-  transition: left 0.2s ease, top 0.2s ease, transform 0.2s ease;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
 }
 
-.puzzle-piece:active {
-  cursor: grabbing;
-  transform: scale(1.05);
-}
-
-.puzzle-piece.active {
-  display: block;
-}
-
+/* Voortgangsbalk */
 #progress-bar {
   width: 250px;
   height: 20px;
-  background: #ddd;
+  background: rgba(255, 255, 255, 0.2);
   border-radius: 10px;
   overflow: hidden;
-  margin: 20px auto 0;
+  margin-top: 1rem;
 }
 
 #progress {
@@ -215,24 +172,87 @@ h1 {
   transition: width 0.3s ease;
 }
 
+/* Puzzelcontainer met glass-effect */
+#puzzle-container {
+  display: grid;
+  grid-template-columns: repeat(2, 120px);
+  grid-template-rows: repeat(2, 120px);
+  gap: 10px;
+  border-radius: var(--border-radius);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--box-shadow);
+  backdrop-filter: blur(12px);
+  background: var(--glass-bg);
+  padding: 1rem;
+  z-index: 1;
+}
+
+.grid-cell {
+  width: 120px;
+  height: 120px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: var(--border-radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid transparent;
+  transition: border 0.3s, background-color 0.3s;
+}
+
+.grid-cell.highlight {
+  border: 3px solid var(--accent-color);
+}
+
+.grid-cell.filled {
+  background-color: rgba(255, 255, 255, 0.3);
+  border: 3px solid var(--primary-color);
+}
+
+/* Puzzelstukken */
+#pieces {
+  position: relative;
+  z-index: 2;
+}
+
+.puzzle-piece {
+  width: 90px;
+  height: 90px;
+  border-radius: var(--border-radius);
+  background-color: var(--primary-color);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  position: absolute;
+  cursor: grab;
+  display: none;
+  transition: left 0.2s, top 0.2s, transform 0.2s;
+}
+
+.puzzle-piece.active {
+  display: block;
+}
+
+.puzzle-piece:active {
+  transform: scale(1.05);
+  cursor: grabbing;
+}
+
+/* Winnaarsbericht (ook glass-effect) */
 #winner-message {
   display: none;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  font-size: 22px;
-  font-weight: bold;
-  color: #fff;
-  background: var(--primary-color);
-  padding: 20px;
-  border-radius: var(--border-radius);
   position: absolute;
-  top: 45%;
-  left: 20%;
+  top: 50%;
+  left: 50%;
   transform: translate(-50%, -50%);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  z-index: 900;
+  backdrop-filter: blur(14px);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--box-shadow);
+  border-radius: var(--border-radius);
+  padding: 2rem;
+  text-align: center;
+  z-index: 999;
 }
 
 #winner-message.show {
@@ -240,62 +260,91 @@ h1 {
   animation: winnerPopup 0.6s ease forwards;
 }
 
+#winner-message h2 {
+  margin-bottom: 1rem;
+}
+
+#winner-message p {
+  margin-bottom: 1rem;
+}
+
 #winner-message button {
-  padding: 10px 20px;
-  font-size: 16px;
-  margin-top: 15px;
-  margin-right: 10px;
   background-color: #fff;
+  color: var(--primary-color);
   border: none;
   border-radius: var(--border-radius);
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
   cursor: pointer;
-  color: var(--primary-color);
+  margin: 0.5rem;
+  transition: background-color 0.3s;
 }
 
 #winner-message button:hover {
-  background-color: #f4f4f4;
+  background-color: rgba(255, 255, 255, 0.8);
 }
 
-/* Container voor social share-knoppen */
+/* Social share container */
 #social-share {
-  margin-top: 15px;
   display: flex;
   gap: 10px;
+  margin-top: 1rem;
 }
 
 .share-btn {
   background-color: #fff;
   color: var(--primary-color);
-  padding: 8px 12px;
+  padding: 0.5rem 1rem;
   border-radius: var(--border-radius);
-  text-decoration: none;
-  font-weight: bold;
-  font-size: 14px;
   border: none;
   cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s;
 }
 
 .share-btn:hover {
-  background-color: #f4f4f4;
+  background-color: rgba(255, 255, 255, 0.8);
 }
 
-/* Score en Timer */
+/* Score en Timer (rechtsboven) */
 #score-timer {
   position: absolute;
-  top: 20px;
-  right: 20px;
-  background: var(--bg-color);
-  padding: 10px;
+  top: 1rem;
+  right: 1rem;
+  backdrop-filter: blur(10px);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--box-shadow);
   border-radius: var(--border-radius);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  z-index: 2;
+  padding: 0.8rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  font-size: 1rem;
+  z-index: 99;
 }
 
 #score-timer div {
-  margin: 5px 0;
+  margin: 4px 0;
 }
 
-/* Responsive layout */
+@keyframes winnerPopup {
+  0% {
+    opacity: 0;
+    transform: scale(0.5) translate(-50%, -50%) rotate(-10deg);
+  }
+
+  60% {
+    opacity: 1;
+    transform: scale(1.05) translate(-50%, -50%) rotate(2deg);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1) translate(-50%, -50%) rotate(0deg);
+  }
+}
+
 @media (max-width: 768px) {
   body {
     flex-direction: column;
@@ -320,22 +369,5 @@ h1 {
   .puzzle-piece {
     width: 60px;
     height: 60px;
-  }
-}
-
-@keyframes winnerPopup {
-  0% {
-    opacity: 0;
-    transform: scale(0.5) rotate(-10deg);
-  }
-
-  60% {
-    opacity: 1;
-    transform: scale(1.05) rotate(2deg);
-  }
-
-  100% {
-    opacity: 1;
-    transform: scale(1) rotate(0deg);
   }
 }

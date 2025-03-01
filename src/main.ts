@@ -62,14 +62,11 @@ startButton.addEventListener("click", () => {
 });
 
 async function startGame() {
-  startTime = Date.now();
-  timerInterval = window.setInterval(updateTimer, 1000);
   await initWebcamAndGesture();
-  // Selecteer het eerste puzzelstuk
   loadNextPiece();
 }
 
-// Timer
+// Timer functie: wordt pas gestart bij het eerste puzzelstuk
 function updateTimer() {
   const seconds = Math.floor((Date.now() - startTime) / 1000);
   timerDisplay.innerText = `Tijd: ${seconds}s`;
@@ -209,7 +206,7 @@ function checkIfInsideGrid(piece: HTMLDivElement) {
         piece.classList.add("placed");
 
         placedPieces++;
-        score += 10; // Voorbeeld: verhoog score bij correct plaatsen
+        score += 10; // Verhoog score per correct geplaatst stuk
         if (progress) {
           progress.style.width = `${(placedPieces / gridCells.length) * 100}%`;
         }
@@ -224,6 +221,12 @@ function checkIfInsideGrid(piece: HTMLDivElement) {
 }
 
 function loadNextPiece() {
+  // Als er nog geen puzzelstuk actief is, start dan de timer (en zet startTime)
+  if (!timerInterval) {
+    startTime = Date.now();
+    timerInterval = window.setInterval(updateTimer, 1000);
+  }
+
   // Selecteer het volgende stuk dat nog niet geplaatst is.
   let nextPiece = document.querySelector(".puzzle-piece:not(.active):not(.placed)") as HTMLDivElement | null;
   if (nextPiece) {
@@ -239,13 +242,9 @@ function loadNextPiece() {
 
 function checkForWinner() {
   if (placedPieces === gridCells.length && winnerMessage) {
-    // Start confetti
     launchConfetti();
+    winnerMessage.classList.add("show"); // Start de CSS-animatie
 
-    // Laat winner message zien
-    winnerMessage.classList.add("show");  // Start de CSS-animatie
-
-    // Dynamische tekst
     const seconds = Math.floor((Date.now() - startTime) / 1000);
     const winnerText = document.querySelector("#winner-text") as HTMLParagraphElement;
     winnerText.innerHTML = `
@@ -253,22 +252,15 @@ function checkForWinner() {
       met een score van <strong>${score}</strong>!
     `;
 
-    // Geluidseffect
     playSound(winSound);
-
-    // Timer stoppen
     if (timerInterval) clearInterval(timerInterval);
-
-    // Score tonen
     scoreDisplay.innerText = `Score: ${score}`;
 
-    // Knop voor opnieuw spelen
     const playAgainButton = document.querySelector("#play-again-button") as HTMLButtonElement;
     playAgainButton.onclick = () => {
-      location.reload(); // Simpelste manier om het spel te resetten
+      location.reload();
     };
 
-    // Social share knoppen
     shareFacebookBtn = document.querySelector("#share-facebook") as HTMLButtonElement;
     shareTwitterBtn = document.querySelector("#share-twitter") as HTMLButtonElement;
 
@@ -278,7 +270,6 @@ function checkForWinner() {
         const shareText = encodeURIComponent(
           `Ik heb zojuist de puzzel voltooid in ${seconds} seconden met een score van ${score}!`
         );
-        // Open Facebook share in nieuw tabblad
         window.open(
           `https://www.facebook.com/sharer/sharer.php?u=${shareUrl}&quote=${shareText}`,
           "_blank"
@@ -291,7 +282,6 @@ function checkForWinner() {
         const shareText = encodeURIComponent(
           `Ik heb zojuist de puzzel voltooid in ${seconds} seconden met een score van ${score}!`
         );
-        // Open Twitter share
         window.open(
           `https://twitter.com/intent/tweet?text=${shareText}&url=${encodeURIComponent(window.location.href)}`,
           "_blank"
@@ -301,27 +291,23 @@ function checkForWinner() {
   }
 }
 
-// Confetti-functie
 function launchConfetti() {
-  const duration = 3 * 1000; // 3 seconden
+  const duration = 3 * 1000;
   const end = Date.now() + duration;
 
   (function frame() {
-    // Schiet wat confetti links
     confetti({
       particleCount: 3,
       angle: 60,
       spread: 55,
       origin: { x: 0 }
     });
-    // Schiet wat confetti rechts
     confetti({
       particleCount: 3,
       angle: 120,
       spread: 55,
       origin: { x: 1 }
     });
-    // Blijf confetti afschieten tot de tijd voorbij is
     if (Date.now() < end) {
       requestAnimationFrame(frame);
     }
