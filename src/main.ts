@@ -7,7 +7,7 @@ import "./main.css";
 import {
   FilesetResolver,
   GestureRecognizer,
-  GestureRecognizerResult
+  GestureRecognizerResult,
 } from "@mediapipe/tasks-vision";
 
 // Variabelen
@@ -117,7 +117,7 @@ async function enableWebcam() {
 
   try {
     const stream = await navigator.mediaDevices.getUserMedia({
-      video: { width: 640, height: 480 }
+      video: { width: 640, height: 480 },
     });
     video.srcObject = stream;
 
@@ -165,16 +165,28 @@ function trackHandPosition(results: GestureRecognizerResult) {
   const indexFinger = results.landmarks[0][8];
   if (!indexFinger) return;
 
-  // Update de positie van het actieve puzzelstuk op basis van de handpositie
-  selectedPiece.style.left = `${Math.max(10, Math.min(indexFinger.x * window.innerWidth, window.innerWidth - 100))}px`;
-  selectedPiece.style.top = `${Math.max(10, Math.min(indexFinger.y * window.innerHeight, window.innerHeight - 100))}px`;
+  // indexFinger.x en indexFinger.y zijn meestal genormaliseerd (tussen 0 en 1)
+  const normalizedX = indexFinger.x; // 0..1
+  const normalizedY = indexFinger.y; // 0..1
 
-  highlightTargetCell(selectedPiece);
+  // Schaal deze naar de volledige browserbreedte/hoogte
+  const xPos = normalizedX * window.innerWidth;
+  const yPos = normalizedY * window.innerHeight;
+
+  // Puzzelstuk centreren
+  const pieceHalfWidth = selectedPiece.offsetWidth / 2;
+  const pieceHalfHeight = selectedPiece.offsetHeight / 2;
+
+  // Zet het puzzelstuk op die positie
+  selectedPiece.style.left = `${xPos - pieceHalfWidth}px`;
+  selectedPiece.style.top = `${yPos - pieceHalfHeight}px`;
+
   checkIfInsideGrid(selectedPiece);
 }
 
+
 function highlightTargetCell(piece: HTMLDivElement) {
-  gridCells.forEach(cell => {
+  gridCells.forEach((cell) => {
     cell.classList.remove("highlight");
     if (piece.dataset.target === cell.id) {
       cell.classList.add("highlight");
@@ -206,7 +218,7 @@ function checkIfInsideGrid(piece: HTMLDivElement) {
         piece.classList.add("placed");
 
         placedPieces++;
-        score += 10; // Verhoog score per correct geplaatst stuk
+        score += 10;
         if (progress) {
           progress.style.width = `${(placedPieces / gridCells.length) * 100}%`;
         }
@@ -221,14 +233,14 @@ function checkIfInsideGrid(piece: HTMLDivElement) {
 }
 
 function loadNextPiece() {
-  // Als er nog geen puzzelstuk actief is, start dan de timer (en zet startTime)
   if (!timerInterval) {
     startTime = Date.now();
     timerInterval = window.setInterval(updateTimer, 1000);
   }
 
-  // Selecteer het volgende stuk dat nog niet geplaatst is.
-  let nextPiece = document.querySelector(".puzzle-piece:not(.active):not(.placed)") as HTMLDivElement | null;
+  let nextPiece = document.querySelector(
+    ".puzzle-piece:not(.active):not(.placed)"
+  ) as HTMLDivElement | null;
   if (nextPiece) {
     nextPiece.classList.add("active");
     selectedPiece = nextPiece;
@@ -243,7 +255,7 @@ function loadNextPiece() {
 function checkForWinner() {
   if (placedPieces === gridCells.length && winnerMessage) {
     launchConfetti();
-    winnerMessage.classList.add("show"); // Start de CSS-animatie
+    winnerMessage.classList.add("show");
 
     const seconds = Math.floor((Date.now() - startTime) / 1000);
     const winnerText = document.querySelector("#winner-text") as HTMLParagraphElement;
@@ -300,13 +312,13 @@ function launchConfetti() {
       particleCount: 3,
       angle: 60,
       spread: 55,
-      origin: { x: 0 }
+      origin: { x: 0 },
     });
     confetti({
       particleCount: 3,
       angle: 120,
       spread: 55,
-      origin: { x: 1 }
+      origin: { x: 1 },
     });
     if (Date.now() < end) {
       requestAnimationFrame(frame);
