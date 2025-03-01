@@ -1,17 +1,36 @@
-@use "@material";
+:root {
+  --primary-color: #4caf50;
+  --accent-color: #ff9800;
+  --bg-color: #ffffff;
+  --light-bg: #f4f4f4;
+  --text-color: #333333;
+  --border-radius: 8px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
 body {
-  font-family: roboto;
-  margin: 2em;
-  color: #3d3d3d;
-  --mdc-theme-primary: #007f8b;
-  --mdc-theme-on-primary: #f1f3f4;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  overflow: hidden;
+  background-color: var(--light-bg);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: var(--text-color);
+  position: relative;
 }
 
 h1 {
-  color: #007f8b;
+  font-size: 24px;
+  margin-bottom: 10px;
+  color: var(--primary-color);
 }
-
 
 .output {
   display: none;
@@ -51,4 +70,272 @@ h1 {
   height: 100%;
   left: 0;
   top: 0;
+}
+
+/* Achtergrondoverlay met subtiele animatie */
+#background-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  background: radial-gradient(circle at center,
+      rgba(255, 255, 255, 0.1),
+      transparent 70%) no-repeat;
+  animation: bgAnimation 10s infinite alternate;
+}
+
+@keyframes bgAnimation {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  100% {
+    background-position: 100% 50%;
+  }
+}
+
+/* Startmenu overlay */
+#start-menu {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 105%;
+  height: 110%;
+  background: rgba(0, 0, 0, 2);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  text-align: center;
+  padding: 20px;
+}
+
+#start-menu button {
+  padding: 10px 20px;
+  font-size: 18px;
+  margin-top: 20px;
+  background-color: var(--primary-color);
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  color: #fff;
+}
+
+/* Webcam en info */
+.webcam-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg-color);
+  border-radius: var(--border-radius);
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-right: 40px;
+  z-index: 2;
+  /* Zodat het boven de background-overlay staat */
+}
+
+/* Spelbord */
+#puzzle-container {
+  display: grid;
+  grid-template-columns: repeat(2, 120px);
+  grid-template-rows: repeat(2, 120px);
+  gap: 10px;
+  border: 3px solid var(--text-color);
+  padding: 15px;
+  background-color: var(--bg-color);
+  border-radius: var(--border-radius);
+  position: relative;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 2;
+  /* Ook boven de overlay */
+}
+
+.grid-cell {
+  width: 120px;
+  height: 120px;
+  border: 2px solid #ccc;
+  background-color: #e0e0e0;
+  border-radius: var(--border-radius);
+  position: relative;
+  transition: background-color 0.3s ease, border 0.3s ease;
+}
+
+.grid-cell.highlight {
+  background-color: #fff9c4;
+  border: 3px solid var(--accent-color);
+}
+
+.grid-cell.filled {
+  background-color: #c8e6c9;
+  border: 3px solid var(--primary-color);
+}
+
+.puzzle-piece {
+  width: 90px;
+  height: 90px;
+  background-color: var(--primary-color);
+  border-radius: var(--border-radius);
+  position: absolute;
+  z-index: 3;
+  cursor: grab;
+  top: 250px;
+  display: none;
+  transition: left 0.2s ease, top 0.2s ease, transform 0.2s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.puzzle-piece:active {
+  cursor: grabbing;
+  transform: scale(1.05);
+}
+
+.puzzle-piece.active {
+  display: block;
+}
+
+#progress-bar {
+  width: 250px;
+  height: 20px;
+  background: #ddd;
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 20px auto 0;
+}
+
+#progress {
+  height: 100%;
+  width: 0%;
+  background: var(--primary-color);
+  transition: width 0.3s ease;
+}
+
+#winner-message {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 22px;
+  font-weight: bold;
+  color: #fff;
+  background: var(--primary-color);
+  padding: 20px;
+  border-radius: var(--border-radius);
+  position: absolute;
+  top: 45%;
+  left: 20%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 900;
+}
+
+#winner-message.show {
+  display: flex;
+  animation: winnerPopup 0.6s ease forwards;
+}
+
+#winner-message button {
+  padding: 10px 20px;
+  font-size: 16px;
+  margin-top: 15px;
+  margin-right: 10px;
+  background-color: #fff;
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  color: var(--primary-color);
+}
+
+#winner-message button:hover {
+  background-color: #f4f4f4;
+}
+
+/* Container voor social share-knoppen */
+#social-share {
+  margin-top: 15px;
+  display: flex;
+  gap: 10px;
+}
+
+.share-btn {
+  background-color: #fff;
+  color: var(--primary-color);
+  padding: 8px 12px;
+  border-radius: var(--border-radius);
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 14px;
+  border: none;
+  cursor: pointer;
+}
+
+.share-btn:hover {
+  background-color: #f4f4f4;
+}
+
+/* Score en Timer */
+#score-timer {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: var(--bg-color);
+  padding: 10px;
+  border-radius: var(--border-radius);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 2;
+}
+
+#score-timer div {
+  margin: 5px 0;
+}
+
+/* Responsive layout */
+@media (max-width: 768px) {
+  body {
+    flex-direction: column;
+  }
+
+  .webcam-wrapper {
+    margin-right: 0;
+    margin-bottom: 20px;
+  }
+
+  #puzzle-container {
+    grid-template-columns: repeat(2, 80px);
+    grid-template-rows: repeat(2, 80px);
+    gap: 5px;
+  }
+
+  .grid-cell {
+    width: 80px;
+    height: 80px;
+  }
+
+  .puzzle-piece {
+    width: 60px;
+    height: 60px;
+  }
+}
+
+@keyframes winnerPopup {
+  0% {
+    opacity: 0;
+    transform: scale(0.5) rotate(-10deg);
+  }
+
+  60% {
+    opacity: 1;
+    transform: scale(1.05) rotate(2deg);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
 }

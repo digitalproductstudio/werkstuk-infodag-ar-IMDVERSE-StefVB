@@ -1,3 +1,5 @@
+declare var confetti: any;
+
 import { displayLandmarks } from "./lib/display";
 import { hasGetUserMedia } from "./lib/utils";
 import "./main.css";
@@ -36,6 +38,10 @@ const startButton = document.querySelector("#start-button") as HTMLButtonElement
 const placeSound = document.querySelector("#place-sound") as HTMLAudioElement;
 const winSound = document.querySelector("#win-sound") as HTMLAudioElement;
 
+// Social share knoppen
+let shareFacebookBtn: HTMLButtonElement | null = null;
+let shareTwitterBtn: HTMLButtonElement | null = null;
+
 // Puzzelstukken
 let pieces = Array.from(document.querySelectorAll(".puzzle-piece")) as HTMLDivElement[];
 let selectedPiece: HTMLDivElement | null = null;
@@ -58,12 +64,12 @@ startButton.addEventListener("click", () => {
 async function startGame() {
   startTime = Date.now();
   timerInterval = window.setInterval(updateTimer, 1000);
-  // We vertrouwen volledig op handtracking, dus geen fallback-besturing
   await initWebcamAndGesture();
   // Selecteer het eerste puzzelstuk
   loadNextPiece();
 }
 
+// Timer
 function updateTimer() {
   const seconds = Math.floor((Date.now() - startTime) / 1000);
   timerDisplay.innerText = `Tijd: ${seconds}s`;
@@ -85,7 +91,6 @@ async function initWebcamAndGesture() {
     btnEnableWebcam?.addEventListener("click", enableWebcam);
   } catch (e) {
     console.error("Initialisatie fout:", e);
-    // Indien webcam niet beschikbaar is, kan er later een melding komen
   }
 }
 
@@ -234,13 +239,93 @@ function loadNextPiece() {
 
 function checkForWinner() {
   if (placedPieces === gridCells.length && winnerMessage) {
-    winnerMessage.style.display = "block";
+    // Start confetti
+    launchConfetti();
+
+    // Laat winner message zien
+    winnerMessage.classList.add("show");  // Start de CSS-animatie
+
+    // Dynamische tekst
+    const seconds = Math.floor((Date.now() - startTime) / 1000);
+    const winnerText = document.querySelector("#winner-text") as HTMLParagraphElement;
+    winnerText.innerHTML = `
+      Je hebt de puzzel voltooid in <strong>${seconds} seconden</strong>
+      met een score van <strong>${score}</strong>!
+    `;
+
+    // Geluidseffect
     playSound(winSound);
-    // Stop timer
+
+    // Timer stoppen
     if (timerInterval) clearInterval(timerInterval);
-    // Update score (bijv. bonus op basis van tijd)
+
+    // Score tonen
     scoreDisplay.innerText = `Score: ${score}`;
+
+    // Knop voor opnieuw spelen
+    const playAgainButton = document.querySelector("#play-again-button") as HTMLButtonElement;
+    playAgainButton.onclick = () => {
+      location.reload(); // Simpelste manier om het spel te resetten
+    };
+
+    // Social share knoppen
+    shareFacebookBtn = document.querySelector("#share-facebook") as HTMLButtonElement;
+    shareTwitterBtn = document.querySelector("#share-twitter") as HTMLButtonElement;
+
+    if (shareFacebookBtn) {
+      shareFacebookBtn.addEventListener("click", () => {
+        const shareUrl = encodeURIComponent(window.location.href);
+        const shareText = encodeURIComponent(
+          `Ik heb zojuist de puzzel voltooid in ${seconds} seconden met een score van ${score}!`
+        );
+        // Open Facebook share in nieuw tabblad
+        window.open(
+          `https://www.facebook.com/sharer/sharer.php?u=${shareUrl}&quote=${shareText}`,
+          "_blank"
+        );
+      });
+    }
+
+    if (shareTwitterBtn) {
+      shareTwitterBtn.addEventListener("click", () => {
+        const shareText = encodeURIComponent(
+          `Ik heb zojuist de puzzel voltooid in ${seconds} seconden met een score van ${score}!`
+        );
+        // Open Twitter share
+        window.open(
+          `https://twitter.com/intent/tweet?text=${shareText}&url=${encodeURIComponent(window.location.href)}`,
+          "_blank"
+        );
+      });
+    }
   }
+}
+
+// Confetti-functie
+function launchConfetti() {
+  const duration = 3 * 1000; // 3 seconden
+  const end = Date.now() + duration;
+
+  (function frame() {
+    // Schiet wat confetti links
+    confetti({
+      particleCount: 3,
+      angle: 60,
+      spread: 55,
+      origin: { x: 0 }
+    });
+    // Schiet wat confetti rechts
+    confetti({
+      particleCount: 3,
+      angle: 120,
+      spread: 55,
+      origin: { x: 1 }
+    });
+    // Blijf confetti afschieten tot de tijd voorbij is
+    if (Date.now() < end) {
+      requestAnimationFrame(frame);
+    }
+  })();
 }
 
 function playSound(audioElement: HTMLAudioElement) {
