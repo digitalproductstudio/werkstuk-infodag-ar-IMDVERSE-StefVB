@@ -33,14 +33,13 @@ Speel met behulp van de webcam en handtracking en ontdek zo de wereld van IMD.
 ## Usage
 1. After installing the project, run `npm run dev` in the terminal
 2. Open the browser and go to `localhost:5173/werkstuk-infodag-ar-IMDVERSE-StefVB`
-3. Allow the browser to use the webcam
+3. Allow the webcam in the browser
 4. Play the game!
 5. Enjoy
 6. Learn
-7. Discover
-8. Explore
-9.  Share
-10. Repeat
+7. Explore
+8.  Share
+9.  Repeat
 
 ## Technologies
 - HTML
