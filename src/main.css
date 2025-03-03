@@ -1,8 +1,10 @@
 :root {
   --primary-color: #4caf50;
-  --lost-color: #f44336;
   --accent-color: #ff9800;
-  --bg-gradient: linear-gradient(115deg, rgba(56, 239, 125, 0.7), rgba(39, 174, 96, 0.7), rgba(29, 80, 40, 0.7));
+  --bg-gradient: linear-gradient(115deg,
+      rgba(56, 239, 125, 0.7),
+      rgba(39, 174, 96, 0.7),
+      rgba(29, 80, 40, 0.7));
   --glass-bg: rgba(255, 255, 255, 0.1);
   --glass-border: rgba(255, 255, 255, 0.3);
   --text-color: #fff;
@@ -17,7 +19,7 @@
 }
 
 body {
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   background: var(--bg-gradient);
   height: 100vh;
   overflow: hidden;
@@ -28,6 +30,7 @@ body {
   position: relative;
 }
 
+/* Background overlay for glass effect */
 #background-overlay {
   position: absolute;
   top: 0;
@@ -39,6 +42,7 @@ body {
   z-index: 0;
 }
 
+/* Startmenu overlay */
 #start-menu {
   position: absolute;
   top: 0;
@@ -83,6 +87,7 @@ body {
   background-color: #ffab40;
 }
 
+/* Webcam-container with glass-effect */
 .webcam-wrapper {
   display: flex;
   flex-direction: column;
@@ -121,6 +126,7 @@ body {
   background-color: #66bb6a;
 }
 
+/* AR-layers */
 #ar-layers {
   position: relative;
   width: 320px;
@@ -144,6 +150,7 @@ body {
   pointer-events: none;
 }
 
+/* Progress bar */
 #progress-bar {
   width: 250px;
   height: 20px;
@@ -160,41 +167,50 @@ body {
   transition: width 0.3s ease;
 }
 
+/* Puzzle container (frame) */
 #puzzle-container {
   display: grid;
   grid-template-columns: repeat(2, 120px);
   grid-template-rows: repeat(2, 120px);
-  gap: 10px;
-  border-radius: var(--border-radius);
+  gap: 0;
+  border-radius: 0;
   border: 1px solid var(--glass-border);
   box-shadow: var(--box-shadow);
   backdrop-filter: blur(12px);
   background: var(--glass-bg);
-  padding: 1rem;
+  padding: 0;
   z-index: 1;
+  position: relative;
+  /* ADDED: container is reference for puzzle pieces */
 }
 
+
+/* Grid cells (targets) */
+/* CHANGED: exactly 120x120, no border radius for a perfect square */
 .grid-cell {
   width: 120px;
   height: 120px;
   background-color: rgba(255, 255, 255, 0.2);
-  border-radius: var(--border-radius);
+  border-radius: 0;
+  /* removed rounding */
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 2px solid transparent;
+  border: 1px solid transparent;
+  /* optional: you could remove if you want no border at all */
   transition: border 0.3s, background-color 0.3s;
 }
 
 .grid-cell.highlight {
-  border: 3px solid var(--accent-color);
+  border: 2px solid var(--accent-color);
 }
 
 .grid-cell.filled {
   background-color: rgba(255, 255, 255, 0.3);
-  border: 3px solid var(--primary-color);
+  border: 2px solid var(--primary-color);
 }
 
+/* Puzzle pieces container */
 #pieces {
   position: absolute;
   top: 0;
@@ -205,11 +221,16 @@ body {
   z-index: 200;
 }
 
+/* Puzzle pieces */
+/* CHANGED: set to 120x120 to fully fill each cell */
 .puzzle-piece {
   pointer-events: auto;
-  width: 90px;
-  height: 90px;
-  border-radius: var(--border-radius);
+  width: 120px;
+  /* changed from 90px to 120px */
+  height: 120px;
+  /* changed from 90px to 120px */
+  border-radius: 0;
+  /* remove rounding so they meet flush */
   background-color: var(--primary-color);
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
   position: absolute;
@@ -222,19 +243,128 @@ body {
   display: block;
 }
 
+.puzzle-piece.placed {
+  display: block;
+}
+
 .puzzle-piece:active {
   transform: scale(1.05);
   cursor: grabbing;
 }
 
-/* Winner Message (voor winst) */
+/* Top-left piece: no tabs on top/left; 
+   outward tab on the right; inward blank on bottom */
+#piece1 {
+  width: 118px;
+  height: 118px;
+  clip-path: path("M0,0 
+ H200
+      /* top edge: straight across */
+      V80
+      /* move down to where right tab begins */
+      c0, 15, 15, 15, 15, 30
+      /* outward tab arc */
+      c0, 15, -15, 15, -15, 30
+      /* close that tab arc */
+      V200
+      /* down to bottom-right corner */
+      H130
+      /* move left for bottom blank arc start */
+      c-15, 0, -15, 15, -15, 30
+      /* inward blank arc (half) */
+      c0, 15, 15, 15, 15, 30
+      /* second half of the blank arc */
+      H0
+      /* all the way to bottom-left corner */
+      Z");
+)
+}
+
+/* Top-right piece: no tabs on top/right; 
+     inward blank on left; inward blank on bottom */
+#piece2 {
+  width: 118px;
+  height: 118px;
+  clip-path: path("M0,0
+ H200
+      /* top edge: straight across */
+      V200
+      /* right edge: straight down (no tab) */
+      H70
+      /* move left to bottom blank arc start */
+      c-15, 0, -15, 15, -15, 30 c0, 15, 15, 15, 15, 30 H0
+      /* all the way to bottom-left corner */
+      V110
+      /* up to left blank arc start */
+      c0, -15, 15, -15, 15, -30
+      /* inward blank arc on left edge */
+      c0, -15, -15, -15, -15, -30 V0 Z");
+)
+}
+
+/* Bottom-left piece: top tab (matching #piece1’s bottom blank),
+     left edge no tab, right tab, bottom edge no tab */
+#piece3 {
+  width: 118px;
+  height: 118px;
+  clip-path: path("M0,0
+ H130
+      /* top edge: move to top blank arc start */
+      c15, 0, 15, -15, 15, -30
+      /* outward tab (matching #piece1’s bottom blank) */
+      c0, -15, -15, -15, -15, -30 H0 V70
+      /* left edge: no tab, just straight if you prefer */
+      c0, 15, 15, 15, 15, 30
+      /* outward tab on left edge (if desired) */
+      c0, 15, -15, 15, -15, 30 V200 H200 V120
+      /* move up to right tab arc start */
+      c0, -15, -15, -15, -15, -30 c0, -15, 15, -15, 15, -30 V0 Z");
+)
+}
+
+/* Bottom-right piece: top blank (matching #piece2’s bottom + #piece3’s top),
+     left blank (matching #piece3’s right tab), no tab bottom/right edges */
+#piece4 {
+  width: 118px;
+  height: 118px;
+  clip-path: path("M0,0
+ H70 c15, 0, 15, -15, 15, -30 c0, -15, -15, -15, -15, -30 H0 V200 H200 V70 c0, -15, -15, -15, -15, -30 c0, -15, 15, -15, 15, -30 V0 Z");
+)
+}
+
+/* Final logo overlay (shown after puzzle completion, before winner msg) */
+#final-logo-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 998;
+}
+
+#final-logo-overlay.show {
+  display: flex;
+}
+
+#final-logo {
+  max-width: 50%;
+  height: auto;
+  border: 2px solid #fff;
+  border-radius: 8px;
+}
+
+/* Winner message (glass-effect) */
 #winner-message {
   position: fixed;
   top: 0;
   left: 0;
   width: 135%;
   height: 135%;
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(0, 0, 0, 0.7);
   z-index: 999;
   display: none;
   align-items: center;
@@ -247,7 +377,10 @@ body {
 
 #winner-content {
   backdrop-filter: blur(14px);
-  background: var(--primary-color) linear-gradient(115deg, rgba(56, 239, 125, 0.7), rgba(39, 174, 96, 0.7), rgba(29, 80, 40, 0.7));
+  background: var(--primary-color) linear-gradient(115deg,
+      rgba(56, 239, 125, 0.7),
+      rgba(39, 174, 96, 0.7),
+      rgba(29, 80, 40, 0.7));
   border: 1px solid var(--glass-border);
   box-shadow: var(--box-shadow);
   border-radius: var(--border-radius);
@@ -280,93 +413,6 @@ body {
   background-color: rgba(255, 255, 255, 0.8);
 }
 
-/* Lost Message Styling */
-#lost-message {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 9999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-#lost-content {
-  backdrop-filter: blur(14px);
-  background: var(--lost-color) linear-gradient(115deg, rgba(168, 7, 7, 0.9), rgba(137, 2, 2, 0.79), rgba(29, 80, 40, 0.7));
-  border: 1px solid var(--glass-border);
-  box-shadow: var(--box-shadow);
-  border-radius: var(--border-radius);
-  padding: 2rem;
-  text-align: center;
-  color: var(--text-color);
-}
-
-#lost-content h2 {
-  margin-bottom: 1rem;
-  font-size: 2rem;
-}
-
-#lost-content p {
-  margin-bottom: 1rem;
-  font-size: 1.2rem;
-}
-
-#lost-content button {
-  background-color: #fff;
-  color: var(--primary-color);
-  border: none;
-  border-radius: var(--border-radius);
-  padding: 0.75rem 1.5rem;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background-color 0.3s;
-  margin-top: 1rem;
-}
-
-#lost-content button:hover {
-  background-color: rgba(255, 255, 255, 0.8);
-}
-
-/* Persistent Obstacles Styling */
-#persistent-obstacles {
-  z-index: 150;
-}
-
-.persistent-obstacle {
-  position: absolute;
-  width: 50px;
-  height: 50px;
-  background-color: rgba(255, 0, 0, 0.8);
-  border-radius: 50%;
-}
-
-/* Smooth-hit animatie */
-@keyframes smoothHit {
-  0% {
-    transform: scale(1);
-    opacity: 1;
-  }
-
-  50% {
-    transform: scale(0.9);
-    opacity: 0.8;
-  }
-
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
-.smooth-hit {
-  animation: smoothHit 0.8s ease-in-out;
-}
-
-/* Social Share */
 #social-share {
   margin-top: 1rem;
 }
@@ -386,7 +432,7 @@ body {
   background-color: rgba(255, 255, 255, 0.8);
 }
 
-/* Score en Timer */
+/* Score and Timer (top right) */
 #score-timer {
   position: absolute;
   top: 1rem;
@@ -425,55 +471,6 @@ body {
   }
 }
 
-@keyframes bounce {
-  0% {
-    transform: scale(1);
-  }
-
-  50% {
-    transform: scale(1.1);
-  }
-
-  100% {
-    transform: scale(1);
-  }
-}
-
-.bounce-animation {
-  animation: bounce 0.5s;
-}
-
-@keyframes shake {
-  0% {
-    transform: translateX(0);
-  }
-
-  25% {
-    transform: translateX(-5px);
-  }
-
-  50% {
-    transform: translateX(5px);
-  }
-
-  75% {
-    transform: translateX(-5px);
-  }
-
-  100% {
-    transform: translateX(0);
-  }
-}
-
-.shake-animation {
-  animation: shake 0.5s;
-}
-
-.obstacle {
-  border: 2px dashed #555;
-  border-radius: 10px;
-}
-
 @media (max-width: 768px) {
   body {
     flex-direction: column;
@@ -487,7 +484,6 @@ body {
   #puzzle-container {
     grid-template-columns: repeat(2, 80px);
     grid-template-rows: repeat(2, 80px);
-    gap: 5px;
   }
 
   .grid-cell {
@@ -496,7 +492,7 @@ body {
   }
 
   .puzzle-piece {
-    width: 60px;
-    height: 60px;
+    width: 80px;
+    height: 80px;
   }
 }
