@@ -3,6 +3,10 @@
 
 # IMDVERSE - A WebAR Experience
 
+Discover the world of IMD by playing a fun puzzle game with the help of handtracking and your webcam.
+
+Website: [IMDVERSE](https://digitalproductstudio.github.io/werkstuk-infodag-ar-IMDVERSE-StefVB/)
+
 ## Table of contents
 - [IMDVERSE - A WebAR Experience](#imdverse---a-webar-experience)
   - [Table of contents](#table-of-contents)

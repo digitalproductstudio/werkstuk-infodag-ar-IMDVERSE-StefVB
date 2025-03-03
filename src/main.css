@@ -251,7 +251,7 @@ body {
   left: 0;
   width: 135%;
   height: 135%;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.3);
   z-index: 999;
   display: none;
   align-items: center;
