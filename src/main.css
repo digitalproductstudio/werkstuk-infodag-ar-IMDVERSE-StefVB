@@ -1,24 +1,15 @@
 :root {
-  /* Kleuren en stylingvariabelen */
   --primary-color: #4caf50;
-  /* Hoofdkleur */
+  --lost-color: #f44336;
   --accent-color: #ff9800;
-  /* Accentkleur */
-  --bg-gradient: linear-gradient(115deg,
-      rgba(56, 239, 125, 0.7),
-      rgba(39, 174, 96, 0.7),
-      rgba(29, 80, 40, 0.7));
-  /* Achtergrond */
+  --bg-gradient: linear-gradient(115deg, rgba(56, 239, 125, 0.7), rgba(39, 174, 96, 0.7), rgba(29, 80, 40, 0.7));
   --glass-bg: rgba(255, 255, 255, 0.1);
-  /* Glaseffect-achtergrond */
   --glass-border: rgba(255, 255, 255, 0.3);
-  /* Glaseffect-rand */
   --text-color: #fff;
   --border-radius: 14px;
   --box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
 }
 
-/* Basisreset */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -37,7 +28,6 @@ body {
   position: relative;
 }
 
-/* Semi-transparante, geblurde overlay voor Glassmorphism */
 #background-overlay {
   position: absolute;
   top: 0;
@@ -49,7 +39,6 @@ body {
   z-index: 0;
 }
 
-/* Startmenu overlay */
 #start-menu {
   position: absolute;
   top: 0;
@@ -94,7 +83,6 @@ body {
   background-color: #ffab40;
 }
 
-/* Webcam-container met glass-effect */
 .webcam-wrapper {
   display: flex;
   flex-direction: column;
@@ -133,7 +121,6 @@ body {
   background-color: #66bb6a;
 }
 
-/* AR-layers */
 #ar-layers {
   position: relative;
   width: 320px;
@@ -157,7 +144,6 @@ body {
   pointer-events: none;
 }
 
-/* Voortgangsbalk */
 #progress-bar {
   width: 250px;
   height: 20px;
@@ -174,7 +160,6 @@ body {
   transition: width 0.3s ease;
 }
 
-/* Puzzelcontainer met glass-effect */
 #puzzle-container {
   display: grid;
   grid-template-columns: repeat(2, 120px);
@@ -210,7 +195,6 @@ body {
   border: 3px solid var(--primary-color);
 }
 
-/* Puzzelstukken */
 #pieces {
   position: absolute;
   top: 0;
@@ -221,7 +205,6 @@ body {
   z-index: 200;
 }
 
-/* Puzzelstukken zelf mogen wel pointer events ontvangen */
 .puzzle-piece {
   pointer-events: auto;
   width: 90px;
@@ -244,7 +227,7 @@ body {
   cursor: grabbing;
 }
 
-/* Winnaarsbericht (ook glass-effect) */
+/* Winner Message (voor winst) */
 #winner-message {
   position: fixed;
   top: 0;
@@ -262,10 +245,9 @@ body {
   display: flex;
 }
 
-/* De inhoud van je winnaarsbericht (kaart/pop-up) */
 #winner-content {
   backdrop-filter: blur(14px);
-  background:var(--primary-color) linear-gradient(115deg, rgba(56, 239, 125, 0.7), rgba(39, 174, 96, 0.7), rgba(29, 80, 40, 0.7));
+  background: var(--primary-color) linear-gradient(115deg, rgba(56, 239, 125, 0.7), rgba(39, 174, 96, 0.7), rgba(29, 80, 40, 0.7));
   border: 1px solid var(--glass-border);
   box-shadow: var(--box-shadow);
   border-radius: var(--border-radius);
@@ -298,7 +280,93 @@ body {
   background-color: rgba(255, 255, 255, 0.8);
 }
 
-/* Social share container */
+/* Lost Message Styling */
+#lost-message {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#lost-content {
+  backdrop-filter: blur(14px);
+  background: var(--lost-color) linear-gradient(115deg, rgba(168, 7, 7, 0.9), rgba(137, 2, 2, 0.79), rgba(29, 80, 40, 0.7));
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--box-shadow);
+  border-radius: var(--border-radius);
+  padding: 2rem;
+  text-align: center;
+  color: var(--text-color);
+}
+
+#lost-content h2 {
+  margin-bottom: 1rem;
+  font-size: 2rem;
+}
+
+#lost-content p {
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+}
+
+#lost-content button {
+  background-color: #fff;
+  color: var(--primary-color);
+  border: none;
+  border-radius: var(--border-radius);
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-top: 1rem;
+}
+
+#lost-content button:hover {
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+/* Persistent Obstacles Styling */
+#persistent-obstacles {
+  z-index: 150;
+}
+
+.persistent-obstacle {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  background-color: rgba(255, 0, 0, 0.8);
+  border-radius: 50%;
+}
+
+/* Smooth-hit animatie */
+@keyframes smoothHit {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  50% {
+    transform: scale(0.9);
+    opacity: 0.8;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.smooth-hit {
+  animation: smoothHit 0.8s ease-in-out;
+}
+
+/* Social Share */
 #social-share {
   margin-top: 1rem;
 }
@@ -318,7 +386,7 @@ body {
   background-color: rgba(255, 255, 255, 0.8);
 }
 
-/* Score en Timer (rechtsboven) */
+/* Score en Timer */
 #score-timer {
   position: absolute;
   top: 1rem;
@@ -355,6 +423,55 @@ body {
     opacity: 1;
     transform: scale(1) translate(-50%, -50%) rotate(0deg);
   }
+}
+
+@keyframes bounce {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.1);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+.bounce-animation {
+  animation: bounce 0.5s;
+}
+
+@keyframes shake {
+  0% {
+    transform: translateX(0);
+  }
+
+  25% {
+    transform: translateX(-5px);
+  }
+
+  50% {
+    transform: translateX(5px);
+  }
+
+  75% {
+    transform: translateX(-5px);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.shake-animation {
+  animation: shake 0.5s;
+}
+
+.obstacle {
+  border: 2px dashed #555;
+  border-radius: 10px;
 }
 
 @media (max-width: 768px) {

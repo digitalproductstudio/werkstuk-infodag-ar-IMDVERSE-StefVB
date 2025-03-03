@@ -48,6 +48,7 @@ Speel met behulp van de webcam en handtracking en ontdek zo de wereld van IMD.
 - Three.js
 - Mediapipe
 - Canvas Confetti (https://www.npmjs.com/package/canvas-confetti)
+- GitHub Pages package (https://www.npmjs.com/package/gh-pages)
 
 ## Features
 - Handtracking
