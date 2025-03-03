@@ -25,23 +25,22 @@ Speel met behulp van de webcam en handtracking en ontdek zo de wereld van IMD.
 1. Clone the repository
 2. Open the project in Visual Studio Code
 3. Open the terminal in Visual Studio Code
-4. Run `npm install` in the terminal
-5. Run `npm run dev` in the terminal
-6. Open the browser and go to `localhost:3000`
-7. Play the game
+4. Run `npm install` in the terminal to install the necessary packages
+5. Run `npm run dev` in the terminal to start the server and run the project
+6. Open the browser and go to `http://localhost:5173/werkstuk-infodag-ar-IMDVERSE-StefVB`
+7. Play the game and have fun!
 
 ## Usage
-1. Open the browser and go to `localhost:3000`
-2. Allow the browser to use the webcam
-3. Play the game
-4. Have fun
+1. After installing the project, run `npm run dev` in the terminal
+2. Open the browser and go to `localhost:5173/werkstuk-infodag-ar-IMDVERSE-StefVB`
+3. Allow the browser to use the webcam
+4. Play the game!
 5. Enjoy
 6. Learn
 7. Discover
 8. Explore
-9. Create
-10. Share
-11. Repeat
+9.  Share
+10. Repeat
 
 ## Technologies
 - HTML
@@ -63,12 +62,9 @@ Speel met behulp van de webcam en handtracking en ontdek zo de wereld van IMD.
 - More levels
 - More animations
 - More sounds
-- More confetti
 - More fun
 - More learning
-- More discovering
 - More exploring
-- More creating
 - More sharing
 - More repeating
 - More of everything
