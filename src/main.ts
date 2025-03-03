@@ -360,7 +360,7 @@ function playSound(audioElement: HTMLAudioElement) {
 function splitLogoImage() {
   const logoImage = new Image();
   // Update this path to your desired logo
-  logoImage.src = "/werkstuk-infodag-ar-IMDVERSE-StefVB/public/img/github.svg";
+  logoImage.src = "/werkstuk-infodag-ar-IMDVERSE-StefVB/img/github.svg";
   logoImage.onload = () => {
     const rows = 2;
     const cols = 2;
