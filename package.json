@@ -1,12 +1,14 @@
 {
-  "name": "demo-mediapipe",
-  "private": true,
+  "name": "imdverse",
+  "homepage": "https://digitalproductstudio.github.io/werkstuk-infodag-ar-IMDVERSE-StefVB/",
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "predploy": "npm run build",
+    "deploy": "gh-pages -d dist"
   },
   "devDependencies": {
     "typescript": "~5.7.2",
@@ -15,6 +17,7 @@
   "dependencies": {
     "@mediapipe/tasks-genai": "^0.10.21",
     "@mediapipe/tasks-vision": "^0.10.21",
+    "gh-pages": "^6.3.0",
     "three": "^0.173.0"
   }
 }
