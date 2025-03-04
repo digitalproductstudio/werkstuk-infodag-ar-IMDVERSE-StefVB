@@ -38,8 +38,6 @@ const startMenu = document.querySelector("#start-menu") as HTMLDivElement;
 const startButton = document.querySelector("#start-button") as HTMLButtonElement;
 const placeSound = document.querySelector("#place-sound") as HTMLAudioElement;
 const winSound = document.querySelector("#win-sound") as HTMLAudioElement;
-const finalLogoOverlay = document.querySelector("#final-logo-overlay") as HTMLDivElement;
-
 // Social share buttons
 let shareFacebookBtn: HTMLButtonElement | null = null;
 let shareTwitterBtn: HTMLButtonElement | null = null;
@@ -264,8 +262,8 @@ function loadNextPiece() {
 
 function checkForWinner() {
   if (placedPieces === gridCells.length) {
-    // 1) Show the final logo overlay
-    finalLogoOverlay.classList.add("show");
+    // 1) Fade out puzzle lines
+    fadeOutPuzzleLines();
 
     // 2) After 2 seconds, show confetti & winner message
     setTimeout(() => {
@@ -323,6 +321,11 @@ function checkForWinner() {
         }
       }
     }, 2000);
+
+    function fadeOutPuzzleLines() {
+      // Add a class that tells CSS “we’re done; fade out lines”
+      puzzleContainer.classList.add("completed");
+    }
   }
 }
 

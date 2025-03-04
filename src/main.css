@@ -174,16 +174,19 @@ body {
   grid-template-rows: repeat(2, 120px);
   gap: 0;
   border-radius: 0;
-  border: 1px solid var(--glass-border);
-  box-shadow: var(--box-shadow);
-  backdrop-filter: blur(12px);
-  background: var(--glass-bg);
+  border: none;
+  box-shadow: none;
+  backdrop-filter: none;
+  background: none;
   padding: 0;
   z-index: 1;
   position: relative;
   /* ADDED: container is reference for puzzle pieces */
 }
 
+#final-logo {
+  display: none;
+}
 
 /* Grid cells (targets) */
 /* CHANGED: exactly 120x120, no border radius for a perfect square */
@@ -332,29 +335,18 @@ body {
 )
 }
 
-/* Final logo overlay (shown after puzzle completion, before winner msg) */
-#final-logo-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.7);
-  display: none;
-  align-items: center;
-  justify-content: center;
-  z-index: 998;
+/* When the puzzle is completed, remove lines & highlights */
+#puzzle-container.completed .grid-cell,
+#puzzle-container.completed .grid-cell.filled {
+  border: none;
+  background-color: transparent;
+  transition: border 1s ease, background-color 1s ease;
 }
 
-#final-logo-overlay.show {
-  display: flex;
-}
-
-#final-logo {
-  max-width: 50%;
-  height: auto;
-  border: 2px solid #fff;
-  border-radius: 8px;
+#puzzle-container.completed .puzzle-piece {
+  box-shadow: none;
+  /* remove puzzle piece shadow */
+  transition: box-shadow 1s ease;
 }
 
 /* Winner message (glass-effect) */
