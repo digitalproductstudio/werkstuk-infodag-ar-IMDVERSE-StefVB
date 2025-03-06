@@ -23,13 +23,23 @@ let startTime: number = 0;
 let timerInterval: number | undefined;
 let score: number = 0;
 
+// New variables to handle multiple puzzles
+let puzzlesSolved = 0;
+const imageSources = [
+  "/werkstuk-infodag-ar-IMDVERSE-StefVB/img/github.svg",
+  "/werkstuk-infodag-ar-IMDVERSE-StefVB/img/vitejs.svg",
+  "/werkstuk-infodag-ar-IMDVERSE-StefVB/img/Unreal.png"
+];
+// Create a copy of imageSources to keep track of available images
+let availableImages = [...imageSources]; // Use each image exactly once
+
 // DOM elements
 const video = document.querySelector("#webcam") as HTMLVideoElement;
 const canvasElement = document.querySelector("#output_canvas") as HTMLCanvasElement;
 const canvasCtx = canvasElement.getContext("2d") as CanvasRenderingContext2D;
 const btnEnableWebcam = document.querySelector("#webcamButton") as HTMLButtonElement;
 const gridCells = document.querySelectorAll(".grid-cell") as NodeListOf<HTMLDivElement>;
-const puzzleContainer = document.querySelector("#puzzle-container") as HTMLDivElement; // NEW
+const puzzleContainer = document.querySelector("#puzzle-container") as HTMLDivElement;
 const progress = document.querySelector("#progress") as HTMLDivElement | null;
 const winnerMessage = document.querySelector("#winner-message") as HTMLDivElement | null;
 const timerDisplay = document.querySelector("#timer") as HTMLDivElement;
@@ -48,7 +58,7 @@ let selectedPiece: HTMLDivElement | null = null;
 let placedPieces = 0;
 let occupiedCells: Set<string> = new Set();
 
-// Assign puzzle pieces to the grid cells in order (no shuffle).
+// Assign puzzle pieces to the grid cells in order (no shuffle)
 const cellIds = Array.from(gridCells).map((cell) => cell.id);
 pieces.forEach((piece, idx) => {
   piece.dataset.target = cellIds[idx];
@@ -62,7 +72,12 @@ startButton.addEventListener("click", () => {
 
 async function startGame() {
   await initWebcamAndGesture();
-  splitLogoImage(); // Slice logo into puzzle pieces
+  // Record the start time for the first puzzle.
+  startTime = Date.now();
+  // Pick a random image from availableImages and remove it from the list
+  const randomIndex = Math.floor(Math.random() * availableImages.length);
+  const selectedImage = availableImages.splice(randomIndex, 1)[0];
+  splitLogoImage(selectedImage);
   loadNextPiece();
 }
 
@@ -158,7 +173,7 @@ function trackHandPosition(results: GestureRecognizerResult) {
   // Get the puzzle container's bounding rectangle
   const containerRect = puzzleContainer.getBoundingClientRect();
 
-  // Calculate the position based on window dimensions (as in your original code)
+  // Calculate the position based on window dimensions
   const xPosWindow = indexFinger.x * window.innerWidth;
   const yPosWindow = indexFinger.y * window.innerHeight;
 
@@ -176,13 +191,10 @@ function trackHandPosition(results: GestureRecognizerResult) {
 }
 
 /** 
- * Snaps puzzle piece inside puzzle-container coordinates
- * instead of page coordinates.
+ * Snaps a puzzle piece inside puzzle-container coordinates.
  */
 function checkIfInsideGrid(piece: HTMLDivElement) {
-  // Get the puzzle container's bounding rectangle
   const containerRect = puzzleContainer.getBoundingClientRect();
-  // Get the piece's bounding rectangle and compute its center
   const pieceRect = piece.getBoundingClientRect();
   const pieceCenterX = pieceRect.left + pieceRect.width / 2;
   const pieceCenterY = pieceRect.top + pieceRect.height / 2;
@@ -190,20 +202,17 @@ function checkIfInsideGrid(piece: HTMLDivElement) {
   gridCells.forEach((cell) => {
     const cellRect = cell.getBoundingClientRect();
 
-    // Check if the center of the piece is inside the cell
     if (
       pieceCenterX >= cellRect.left &&
       pieceCenterX <= cellRect.right &&
       pieceCenterY >= cellRect.top &&
       pieceCenterY <= cellRect.bottom
     ) {
-      // If it's the correct cell and not occupied
       if (!occupiedCells.has(cell.id) && piece.dataset.target === cell.id) {
         occupiedCells.add(cell.id);
         cell.classList.remove("highlight");
         cell.classList.add("filled");
 
-        // Snap piece inside puzzleContainer (relative to its coordinates)
         const snapLeft = cellRect.left - containerRect.left;
         const snapTop = cellRect.top - containerRect.top;
 
@@ -220,8 +229,8 @@ function checkIfInsideGrid(piece: HTMLDivElement) {
         }
         playSound(placeSound);
 
-        // Done with this piece
         selectedPiece = null;
+        // Load next piece (if any) after a short delay
         setTimeout(loadNextPiece, 500);
       }
     }
@@ -241,92 +250,121 @@ function highlightTargetCell(piece: HTMLDivElement) {
 
 function loadNextPiece() {
   if (!timerInterval) {
-    startTime = Date.now();
+    // Timer already started in startGame()
     timerInterval = window.setInterval(updateTimer, 1000);
   }
 
+  // If there are still pieces to place for the current puzzle:
   let nextPiece = document.querySelector(
     ".puzzle-piece:not(.active):not(.placed)"
   ) as HTMLDivElement | null;
   if (nextPiece) {
     nextPiece.classList.add("active");
     selectedPiece = nextPiece;
-    // Initial position for new piece (adjust as needed)
     nextPiece.style.left = "150px";
     nextPiece.style.top = "250px";
     highlightTargetCell(nextPiece);
   } else {
-    checkForWinner();
+    // All pieces placed; check for puzzle completion.
+    checkForPuzzleCompletion();
   }
 }
 
-function checkForWinner() {
+/**
+ * Checks if the current puzzle is complete and either resets for the next puzzle or shows the final win message.
+ */
+function checkForPuzzleCompletion() {
   if (placedPieces === gridCells.length) {
-    // 1) Fade out puzzle lines
+    puzzlesSolved++;
     fadeOutPuzzleLines();
 
-    // 2) After 2 seconds, show confetti & winner message
     setTimeout(() => {
       launchConfetti();
 
-      if (winnerMessage) {
-        winnerMessage.classList.add("show");
+      if (availableImages.length > 0) {
+        // More puzzles available: reset puzzle state and load a new puzzle
+        resetPuzzle();
+        const randomIndex = Math.floor(Math.random() * availableImages.length);
+        const selectedImage = availableImages.splice(randomIndex, 1)[0];
+        splitLogoImage(selectedImage);
+        loadNextPiece();
+      } else {
+        // No more images left: final puzzle completed, show winner message.
+        if (winnerMessage) {
+          winnerMessage.classList.add("show");
+          const seconds = Math.floor((Date.now() - startTime) / 1000);
+          const winnerText = document.querySelector("#winner-text") as HTMLParagraphElement;
+          winnerText.innerHTML = `
+            Je hebt alle puzzels voltooid in <strong>${seconds} seconden</strong>
+            met een score van <strong>${score}</strong>!
+          `;
+          playSound(winSound);
+          if (timerInterval) clearInterval(timerInterval);
+          scoreDisplay.innerText = `Score: ${score}`;
 
-        // Fill in the winner message text
-        const seconds = Math.floor((Date.now() - startTime) / 1000);
-        const winnerText = document.querySelector("#winner-text") as HTMLParagraphElement;
-        winnerText.innerHTML = `
-          Je hebt de puzzel voltooid in <strong>${seconds} seconden</strong>
-          met een score van <strong>${score}</strong>!
-        `;
+          const playAgainButton = document.querySelector("#play-again-button") as HTMLButtonElement;
+          playAgainButton.onclick = () => {
+            location.reload();
+          };
 
-        playSound(winSound);
-        if (timerInterval) clearInterval(timerInterval);
-        scoreDisplay.innerText = `Score: ${score}`;
+          shareFacebookBtn = document.querySelector("#share-facebook") as HTMLButtonElement;
+          shareTwitterBtn = document.querySelector("#share-twitter") as HTMLButtonElement;
 
-        // Setup the social share buttons
-        const playAgainButton = document.querySelector("#play-again-button") as HTMLButtonElement;
-        playAgainButton.onclick = () => {
-          location.reload();
-        };
+          if (shareFacebookBtn) {
+            shareFacebookBtn.addEventListener("click", () => {
+              const shareUrl = encodeURIComponent(window.location.href);
+              const shareText = encodeURIComponent(
+                `Ik heb alle puzzels voltooid in ${seconds} seconden met een score van ${score}!`
+              );
+              window.open(
+                `https://www.facebook.com/sharer/sharer.php?u=${shareUrl}&quote=${shareText}`,
+                "_blank"
+              );
+            });
+          }
 
-        shareFacebookBtn = document.querySelector("#share-facebook") as HTMLButtonElement;
-        shareTwitterBtn = document.querySelector("#share-twitter") as HTMLButtonElement;
-
-        if (shareFacebookBtn) {
-          shareFacebookBtn.addEventListener("click", () => {
-            const shareUrl = encodeURIComponent(window.location.href);
-            const shareText = encodeURIComponent(
-              `Ik heb zojuist de puzzel voltooid in ${seconds} seconden met een score van ${score}!`
-            );
-            window.open(
-              `https://www.facebook.com/sharer/sharer.php?u=${shareUrl}&quote=${shareText}`,
-              "_blank"
-            );
-          });
-        }
-
-        if (shareTwitterBtn) {
-          shareTwitterBtn.addEventListener("click", () => {
-            const shareText = encodeURIComponent(
-              `Ik heb zojuist de puzzel voltooid in ${seconds} seconden met een score van ${score}!`
-            );
-            window.open(
-              `https://twitter.com/intent/tweet?text=${shareText}&url=${encodeURIComponent(
-                window.location.href
-              )}`,
-              "_blank"
-            );
-          });
+          if (shareTwitterBtn) {
+            shareTwitterBtn.addEventListener("click", () => {
+              const shareText = encodeURIComponent(
+                `Ik heb alle puzzels voltooid in ${seconds} seconden met een score van ${score}!`
+              );
+              window.open(
+                `https://twitter.com/intent/tweet?text=${shareText}&url=${encodeURIComponent(
+                  window.location.href
+                )}`,
+                "_blank"
+              );
+            });
+          }
         }
       }
     }, 2000);
-
-    function fadeOutPuzzleLines() {
-      // Add a class that tells CSS “we’re done; fade out lines”
-      puzzleContainer.classList.add("completed");
-    }
   }
+}
+
+/**
+ * Resets puzzle-specific state so a new puzzle can begin.
+ */
+function resetPuzzle() {
+  // Reset puzzle piece classes and positions
+  pieces.forEach((piece) => {
+    piece.classList.remove("active", "placed");
+    piece.style.left = "150px";
+    piece.style.top = "250px";
+  });
+  // Clear grid cell highlights and filled classes
+  gridCells.forEach((cell) => {
+    cell.classList.remove("highlight", "filled");
+  });
+  // Reset puzzle counters
+  placedPieces = 0;
+  occupiedCells.clear();
+  // Remove the "completed" class from the puzzle container
+  puzzleContainer.classList.remove("completed");
+}
+
+function fadeOutPuzzleLines() {
+  puzzleContainer.classList.add("completed");
 }
 
 function launchConfetti() {
@@ -359,11 +397,13 @@ function playSound(audioElement: HTMLAudioElement) {
   }
 }
 
-/** Slices the logo into puzzle pieces */
-function splitLogoImage() {
+/**
+ * Slices the selected image into puzzle pieces.
+ * @param imageSrc - The URL of the image to be sliced.
+ */
+function splitLogoImage(imageSrc: string) {
   const logoImage = new Image();
-  // Update this path to your desired logo
-  logoImage.src = "/werkstuk-infodag-ar-IMDVERSE-StefVB/img/github.svg";
+  logoImage.src = imageSrc;
   logoImage.onload = () => {
     const rows = 2;
     const cols = 2;
@@ -377,7 +417,6 @@ function splitLogoImage() {
       const ctx = canvas.getContext("2d");
       if (!ctx) return;
 
-      // row/col in row-major order
       const row = Math.floor(index / cols);
       const col = index % cols;
 
@@ -400,6 +439,6 @@ function splitLogoImage() {
   };
 
   logoImage.onerror = (error) => {
-    console.error("Error loading logo image:", error);
+    console.error("Error loading image:", error);
   };
 }
