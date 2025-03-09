@@ -181,7 +181,6 @@ body {
   padding: 0;
   z-index: 1;
   position: relative;
-  /* ADDED: container is reference for puzzle pieces */
 }
 
 #final-logo {
@@ -189,7 +188,6 @@ body {
 }
 
 /* Grid cells (targets) */
-/* CHANGED: exactly 120x120, no border radius for a perfect square */
 .grid-cell {
   width: 120px;
   height: 120px;
@@ -200,7 +198,6 @@ body {
   align-items: center;
   justify-content: center;
   border: 1px solid transparent;
-  /* optional: you could remove if you want no border at all */
   transition: border 0.3s, background-color 0.3s;
 }
 

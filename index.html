@@ -21,7 +21,10 @@
   <div id="start-menu">
     <h1>Welkom bij IMD Puzzel Game</h1>
     <p>Gebruik handtracking om de puzzelstukken op de juiste plaats te leggen.</p>
-    <p>Richt je hand op het puzzelstuk en beweeg naar het corresponderende vakje. Veel succes!</p>
+    <p>
+      Richt je hand op het puzzelstuk en beweeg naar het corresponderende
+      vakje. Veel succes!
+    </p>
     <button id="start-button">Start Spel</button>
   </div>
 
@@ -42,13 +45,13 @@
 
   <!-- Puzzel container (frame) -->
   <div id="puzzle-container">
-    <!-- your grid cells -->
+    <!-- Grid cells -->
     <div class="grid-cell" id="cell-1"></div>
     <div class="grid-cell" id="cell-2"></div>
     <div class="grid-cell" id="cell-3"></div>
     <div class="grid-cell" id="cell-4"></div>
 
-    <!-- Puzzle pieces, absolutely positioned inside the container -->
+    <!-- Puzzle pieces, absolutely positioned -->
     <div id="pieces">
       <div class="puzzle-piece" id="piece1"></div>
       <div class="puzzle-piece" id="piece2"></div>
@@ -57,8 +60,14 @@
     </div>
   </div>
 
-  <!-- Final logo overlay (hidden until puzzle is complete) -->
+  <!-- Final logo overlay (hidden until final puzzle is complete) -->
   <img id="final-logo" src="/img/github.svg" alt="Final Logo" />
+
+  <!-- Puzzle Solved Overlay (for each individual puzzle) -->
+  <div id="puzzle-solved-overlay"
+    style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background: rgba(0,0,0,0.8); color:#fff; padding:1.5rem; border-radius:10px; z-index:1000; text-align:center;">
+    <p id="puzzle-solved-text"></p>
+  </div>
 
   <!-- Winnaarsbericht -->
   <div id="winner-message">
