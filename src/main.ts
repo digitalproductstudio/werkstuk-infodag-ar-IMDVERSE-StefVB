@@ -266,78 +266,84 @@ declare var confetti: any;
         }
       }
       
+// Facts about the IMD Course
+const triviaByLogo: { [key: string]: string } = {
+  github: "Wist je dat GitHub in 2008 is opgericht en inmiddels miljoenen ontwikkelaars wereldwijd ondersteunt?",
+  vitejs: "Wist je dat ViteJS bekend staat om zijn razendsnelle build-tijden en gebruiksvriendelijke interface?",
+  Unreal: "Wist je dat Unreal Engine niet alleen voor games, maar ook voor filmproducties wordt gebruikt?",
+};
 
-      // New function to show the intermediate puzzle solved overlay.
-      function showPuzzleSolvedOverlay(finalPuzzle = false) {
-        const overlay = document.getElementById("puzzle-solved-overlay") as HTMLDivElement;
-        const textElem = document.getElementById("puzzle-solved-text") as HTMLParagraphElement;
-        if (overlay && textElem) {
-          textElem.innerHTML = `
-            Puzzle Opgelost!<br>
-            Logo: <strong>${currentLogoName}</strong><br>
-            Wist je dat tijdens de IMD training deelnemers hands-on ervaring opdeden met de nieuwste AR-technologieën?
-          `;
-          overlay.style.display = "block";
-          // Na 5 seconden verberg je de overlay en voer je de volgende actie uit:
-          setTimeout(() => {
-            overlay.style.display = "none";
-            if (!finalPuzzle) {
-              // Niet de laatste puzzel: reset en laad de volgende puzzel.
-              resetPuzzle();
-              if (availableImages.length > 0) {
-                const randomIndex = Math.floor(Math.random() * availableImages.length);
-                const selectedImage = availableImages.splice(randomIndex, 1)[0];
-                currentLogoName = selectedImage.split("/").pop()?.split(".")[0] || "";
-                splitLogoImage(selectedImage);
-                loadNextPiece();
-              }
-            } else {
-              // Laatste puzzel: toon de winner message.
-              if (winnerMessage) {
-                winnerMessage.classList.add("show");
-                const seconds = Math.floor((Date.now() - startTime) / 1000);
-                const winnerText = document.querySelector("#winner-text") as HTMLParagraphElement;
-                winnerText.innerHTML = `
-                  Je hebt alle puzzels voltooid in <strong>${seconds} seconden</strong>
-                  met een score van <strong>${score}</strong>!
-                `;
-                playSound(winSound);
-                if (timerInterval) clearInterval(timerInterval);
-                scoreDisplay.innerText = `Score: ${score}`;
-                const playAgainButton = document.querySelector("#play-again-button") as HTMLButtonElement;
-                playAgainButton.onclick = () => {
-                  location.reload();
-                };
-                shareFacebookBtn = document.querySelector("#share-facebook") as HTMLButtonElement;
-                shareTwitterBtn = document.querySelector("#share-twitter") as HTMLButtonElement;
-                if (shareFacebookBtn) {
-                  shareFacebookBtn.addEventListener("click", () => {
-                    const shareUrl = encodeURIComponent(window.location.href);
-                    const shareText = encodeURIComponent(
-                      `Ik heb alle puzzels voltooid in ${seconds} seconden met een score van ${score}!`
-                    );
-                    window.open(
-                      `https://www.facebook.com/sharer/sharer.php?u=${shareUrl}&quote=${shareText}`,
-                      "_blank"
-                    );
-                  });
-                }
-                if (shareTwitterBtn) {
-                  shareTwitterBtn.addEventListener("click", () => {
-                    const shareText = encodeURIComponent(
-                      `Ik heb alle puzzels voltooid in ${seconds} seconden met een score van ${score}!`
-                    );
-                    window.open(
-                      `https://twitter.com/intent/tweet?text=${shareText}&url=${encodeURIComponent(window.location.href)}`,
-                      "_blank"
-                    );
-                  });
-                }
-              }
-            }
-          }, 5000);
+function showPuzzleSolvedOverlay(finalPuzzle = false) {
+  const overlay = document.getElementById("puzzle-solved-overlay") as HTMLDivElement;
+  const textElem = document.getElementById("puzzle-solved-text") as HTMLParagraphElement;
+  if (overlay && textElem) {
+    const triviaText =
+      triviaByLogo[currentLogoName] ||
+      "Standaard weetje: tijdens de IMD opleiding leer je diverse programmeertalen zoals IOT, AR/VR, low-code platforms en AI-tools deskundig gebruiken.";
+    
+    textElem.innerHTML = `
+      Puzzel Opgelost!<br>
+      Logo: <strong>${currentLogoName}</strong><br>
+      ${triviaText}
+    `;
+    overlay.style.display = "block";
+    setTimeout(() => {
+      overlay.style.display = "none";
+      if (!finalPuzzle) {
+        resetPuzzle();
+        if (availableImages.length > 0) {
+          const randomIndex = Math.floor(Math.random() * availableImages.length);
+          const selectedImage = availableImages.splice(randomIndex, 1)[0];
+          currentLogoName = selectedImage.split("/").pop()?.split(".")[0] || "";
+          splitLogoImage(selectedImage);
+          loadNextPiece();
         }
-      }      
+      } else {
+        if (winnerMessage) {
+          winnerMessage.classList.add("show");
+          const seconds = Math.floor((Date.now() - startTime) / 1000);
+          const winnerText = document.querySelector("#winner-text") as HTMLParagraphElement;
+          winnerText.innerHTML = `
+            Je hebt alle puzzels voltooid in <strong>${seconds} seconden</strong>
+            met een score van <strong>${score}</strong>!
+          `;
+          playSound(winSound);
+          if (timerInterval) clearInterval(timerInterval);
+          scoreDisplay.innerText = `Score: ${score}`;
+          const playAgainButton = document.querySelector("#play-again-button") as HTMLButtonElement;
+          playAgainButton.onclick = () => {
+            location.reload();
+          };
+          shareFacebookBtn = document.querySelector("#share-facebook") as HTMLButtonElement;
+          shareTwitterBtn = document.querySelector("#share-twitter") as HTMLButtonElement;
+          if (shareFacebookBtn) {
+            shareFacebookBtn.addEventListener("click", () => {
+              const shareUrl = encodeURIComponent(window.location.href);
+              const shareText = encodeURIComponent(
+                `Ik heb alle puzzels voltooid in ${seconds} seconden met een score van ${score}!`
+              );
+              window.open(
+                `https://www.facebook.com/sharer/sharer.php?u=${shareUrl}&quote=${shareText}`,
+                "_blank"
+              );
+            });
+          }
+          if (shareTwitterBtn) {
+            shareTwitterBtn.addEventListener("click", () => {
+              const shareText = encodeURIComponent(
+                `Ik heb alle puzzels voltooid in ${seconds} seconden met een score van ${score}!`
+              );
+              window.open(
+                `https://twitter.com/intent/tweet?text=${shareText}&url=${encodeURIComponent(window.location.href)}`,
+                "_blank"
+              );
+            });
+          }
+        }
+      }
+    }, 5000);
+  }
+}      
 
       function resetPuzzle() {
         pieces.forEach((piece) => {
