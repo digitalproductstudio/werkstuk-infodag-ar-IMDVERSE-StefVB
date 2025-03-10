@@ -95,6 +95,47 @@ body {
   background-color: #ffab40;
 }
 
+#info-overlay {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #fff;
+  background: var(--primary-color) linear-gradient(115deg,
+      rgba(30, 222, 104, 0.777),
+      rgba(40, 139, 81, 0.7),
+      rgba(29, 80, 40, 0.7));
+  padding: 1.5rem;
+  border-radius: 10px;
+  text-align: center;
+  z-index: 1000;
+}
+
+#info-overlay h2 {
+  margin-bottom: 1rem;
+}
+
+#info-overlay p {
+  margin-bottom: 1rem;
+}
+
+#close-info-button {
+  background-color: #fff;
+  color: var(--primary-color);
+  border: none;
+  border-radius: var(--border-radius);
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+#close-info-button:hover {
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+
 /* Webcam Container with Glass Effect */
 .webcam-wrapper {
   display: flex;

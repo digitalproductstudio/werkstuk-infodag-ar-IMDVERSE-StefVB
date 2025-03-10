@@ -353,8 +353,11 @@ function trackHandPosition(results: GestureRecognizerResult) {
   if (!indexFinger) return;
 
   // Convert from [0..1] to window coordinates
-  const xPosWindow = indexFinger.x * window.innerWidth;
+  let xPosWindow = indexFinger.x * window.innerWidth;
   const yPosWindow = indexFinger.y * window.innerHeight;
+
+  //Invert the X axis.
+  xPosWindow = window.innerWidth - xPosWindow;
 
   if (xPosWindow < 10 && yPosWindow < 10) {
     return;
@@ -381,7 +384,7 @@ function trackHandPosition(results: GestureRecognizerResult) {
 
   // Simple "tap" gesture logic: if the finger moves down quickly
   if (lastFingerY !== 0 && !clickCooldown) {
-    if ((yPosWindow - lastFingerY) > 20) {
+    if (yPosWindow - lastFingerY > 20) {
       document.dispatchEvent(new CustomEvent("handClick"));
       clickCooldown = true;
       setTimeout(() => {
@@ -478,6 +481,62 @@ function splitLogoImage(imageSrc: string) {
     console.error("Error loading image:", error);
   };
 }
+
+// ---------------------------
+// INFO OVERLAY / INFO BUTTON
+// ---------------------------
+const infoOverlay = document.getElementById("info-overlay") as HTMLDivElement;
+const infoButton = document.getElementById("info-button") as HTMLButtonElement;
+const closeInfoButton = document.getElementById("close-info-button") as HTMLButtonElement;
+
+let handCursorX: number = 0;
+let handCursorY: number = 0;
+
+// Update hand cursor coordinates when hand tracking updates
+document.addEventListener("handTrackingUpdate", (event: Event) => {
+  const customEvent = event as CustomEvent<{ x: number; y: number }>;
+  handCursorX = customEvent.detail.x;
+  handCursorY = customEvent.detail.y;
+});
+
+// Function to show the info overlay
+function showInfoOverlay(): void {
+  if (infoOverlay) {
+    infoOverlay.style.display = "block";
+  }
+}
+
+// Function to hide the info overlay
+function hideInfoOverlay(): void {
+  if (infoOverlay) {
+    infoOverlay.style.display = "none";
+  }
+}
+
+// Mouse click event for the info button
+if (infoButton) {
+  infoButton.addEventListener("click", showInfoOverlay);
+}
+
+// Mouse click event for the close button on the overlay
+if (closeInfoButton) {
+  closeInfoButton.addEventListener("click", hideInfoOverlay);
+}
+
+// Hand click event: check if the hand click occurs over the info button
+document.addEventListener("handClick", () => {
+  if (infoButton) {
+    const rect = infoButton.getBoundingClientRect();
+    if (
+      handCursorX >= rect.left &&
+      handCursorX <= rect.right &&
+      handCursorY >= rect.top &&
+      handCursorY <= rect.bottom
+    ) {
+      showInfoOverlay();
+    }
+  }
+});
 
 // Automatically initialize the camera and gesture recognizer on page load
 window.addEventListener("load", initWebcamAndGesture);

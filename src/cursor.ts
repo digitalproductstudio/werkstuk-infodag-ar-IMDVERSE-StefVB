@@ -3,10 +3,9 @@ const cursorContainer = document.createElement("div");
 cursorContainer.id = "cursor-container";
 cursorContainer.style.position = "absolute";
 cursorContainer.style.left = "440px";
-cursorContainer.style.top = "180px";
+cursorContainer.style.top = "150px";
 cursorContainer.style.width = "666px";
-cursorContainer.style.height = "420px";
-// cursorContainer.style.border = "2px solid red"; // For debugging
+cursorContainer.style.height = "530px";
 cursorContainer.style.pointerEvents = "none";
 document.body.appendChild(cursorContainer);
 
@@ -14,19 +13,31 @@ document.body.appendChild(cursorContainer);
 const customCursor = document.createElement("div");
 customCursor.id = "custom-cursor";
 customCursor.style.position = "absolute";
+customCursor.style.left = "945px";
+customCursor.style.top = "550px";
 customCursor.style.width = "100px";
 customCursor.style.height = "100px";
 customCursor.style.backgroundImage =
   "url('/werkstuk-infodag-ar-IMDVERSE-StefVB/img/hand-cursor.png')";
 customCursor.style.backgroundSize = "contain";
 customCursor.style.backgroundRepeat = "no-repeat";
-customCursor.style.backgroundPosition = "center";
 customCursor.style.pointerEvents = "none";
 customCursor.style.zIndex = "1000";
 document.body.appendChild(customCursor);
 
 // Control whether the cursor updates its position
 let cursorEnabled = true;
+
+// Smoothing factor (adjust as needed, smaller values = smoother)
+const smoothingFactor = 0.08; // Adjust this value
+
+// Store the previous smoothed positions
+let smoothedX = 0;
+let smoothedY = 0;
+
+// Store the previous smoothed positions for the second pass
+let smoothedX2 = 0;
+let smoothedY2 = 0;
 
 document.addEventListener("handTrackingUpdate", event => {
   const customEvent = event as CustomEvent<{ x: number; y: number }>;
@@ -58,9 +69,17 @@ document.addEventListener("handTrackingUpdate", event => {
       newY = containerRect.bottom - cursorHeight;
     }
 
-    // Update cursor position
-    customCursor.style.left = newX + "px";
-    customCursor.style.top = newY + "px";
+    // Apply first pass of EMA smoothing
+    smoothedX = smoothedX + smoothingFactor * (newX - smoothedX);
+    smoothedY = smoothedY + smoothingFactor * (newY - smoothedY);
+
+    // Apply second pass of EMA smoothing
+    smoothedX2 = smoothedX2 + smoothingFactor * (smoothedX - smoothedX2);
+    smoothedY2 = smoothedY2 + smoothingFactor * (smoothedY - smoothedY2);
+
+    // Update cursor position with doubly smoothed values
+    customCursor.style.left = smoothedX2 + "px";
+    customCursor.style.top = smoothedY2 + "px";
   }
 });
 
