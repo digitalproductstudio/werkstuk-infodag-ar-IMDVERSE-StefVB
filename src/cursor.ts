@@ -2,11 +2,13 @@
 const customCursor = document.createElement("div");
 customCursor.id = "custom-cursor";
 customCursor.style.position = "absolute";
-customCursor.style.width = "32px";
-customCursor.style.height = "32px";
+customCursor.style.width = "100px";
+customCursor.style.height = "100px";
 customCursor.style.backgroundImage =
   "url('/werkstuk-infodag-ar-IMDVERSE-StefVB/img/hand-cursor.png')"; // Adjust image URL as needed
 customCursor.style.backgroundSize = "contain";
+customCursor.style.backgroundRepeat = "no-repeat";
+customCursor.style.backgroundPosition = "center";
 customCursor.style.pointerEvents = "none"; // Let clicks pass through
 customCursor.style.zIndex = "1000";
 document.body.appendChild(customCursor);

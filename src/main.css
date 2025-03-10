@@ -1,3 +1,8 @@
+/* ==================================================
+   Artevelde University College - Optimized House Style
+   ================================================== */
+
+/* Base variables */
 :root {
   --primary-color: #4caf50;
   --accent-color: #ff9800;
@@ -12,12 +17,14 @@
   --box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
 }
 
+/* Global Reset */
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
+/* Body */
 body {
   font-family: "Poppins", sans-serif;
   background: var(--bg-gradient);
@@ -37,32 +44,33 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
   z-index: 0;
 }
 
-/* Startmenu overlay */
+/* Start Menu Overlay */
 #start-menu {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.65);
+  background: var(--primary-color) linear-gradient(115deg,
+      rgba(30, 222, 104, 0.777),
+      rgba(40, 139, 81, 0.7),
+      rgba(29, 80, 40, 0.7));
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  z-index: 999;
   text-align: center;
   padding: 20px;
+  z-index: 999;
 }
 
 #start-menu h1 {
   font-size: 2rem;
-  margin-bottom: 1rem;
   font-weight: 600;
+  margin-bottom: 1rem;
 }
 
 #start-menu p {
@@ -73,12 +81,12 @@ body {
 
 #start-menu button {
   background-color: var(--accent-color);
+  color: #fff;
   border: none;
   border-radius: var(--border-radius);
   padding: 0.75rem 1.5rem;
   font-size: 1rem;
   cursor: pointer;
-  color: #fff;
   margin-top: 1rem;
   transition: background-color 0.3s;
 }
@@ -87,7 +95,7 @@ body {
   background-color: #ffab40;
 }
 
-/* Webcam-container with glass-effect */
+/* Webcam Container with Glass Effect */
 .webcam-wrapper {
   display: flex;
   flex-direction: column;
@@ -96,12 +104,12 @@ body {
   position: relative;
   backdrop-filter: blur(12px);
   background: var(--glass-bg);
-  border-radius: var(--border-radius);
   border: 1px solid var(--glass-border);
+  border-radius: var(--border-radius);
   box-shadow: var(--box-shadow);
   padding: 1.5rem;
-  z-index: 100;
   margin-right: 2rem;
+  z-index: 100;
 }
 
 .webcam-wrapper h1 {
@@ -109,16 +117,17 @@ body {
   margin-bottom: 1rem;
 }
 
+/* Live View Button */
 #liveView button {
   position: relative;
   z-index: 200;
   background-color: var(--primary-color);
+  color: #fff;
   border: none;
   border-radius: var(--border-radius);
   padding: 0.5rem 1rem;
   font-size: 1rem;
   cursor: pointer;
-  color: #fff;
   transition: background-color 0.3s;
 }
 
@@ -126,7 +135,7 @@ body {
   background-color: #66bb6a;
 }
 
-/* AR-layers */
+/* AR Layers */
 #ar-layers {
   position: relative;
   width: 320px;
@@ -150,7 +159,7 @@ body {
   pointer-events: none;
 }
 
-/* Progress bar */
+/* Progress Bar */
 #progress-bar {
   width: 250px;
   height: 20px;
@@ -161,43 +170,42 @@ body {
 }
 
 #progress {
-  height: 100%;
   width: 0%;
+  height: 100%;
   background: var(--primary-color);
   transition: width 0.3s ease;
 }
 
-/* Puzzle container (frame) */
+/* Puzzle Container */
 #puzzle-container {
   display: grid;
   grid-template-columns: repeat(2, 120px);
   grid-template-rows: repeat(2, 120px);
   gap: 0;
-  border-radius: 0;
+  position: relative;
+  z-index: 1;
+  padding: 0;
   border: none;
+  border-radius: 0;
   box-shadow: none;
   backdrop-filter: none;
   background: none;
-  padding: 0;
-  z-index: 1;
-  position: relative;
 }
 
 #final-logo {
   display: none;
 }
 
-/* Grid cells (targets) */
+/* Grid Cells */
 .grid-cell {
   width: 120px;
   height: 120px;
   background-color: rgba(255, 255, 255, 0.2);
-  border-radius: 0;
-  /* removed rounding */
   display: flex;
   align-items: center;
   justify-content: center;
   border: 1px solid transparent;
+  border-radius: 0;
   transition: border 0.3s, background-color 0.3s;
 }
 
@@ -210,7 +218,7 @@ body {
   border: 2px solid var(--primary-color);
 }
 
-/* Puzzle pieces container */
+/* Puzzle Pieces Container */
 #pieces {
   position: absolute;
   top: 0;
@@ -221,28 +229,21 @@ body {
   z-index: 200;
 }
 
-/* Puzzle pieces */
-/* CHANGED: set to 120x120 to fully fill each cell */
+/* Puzzle Pieces */
 .puzzle-piece {
   pointer-events: auto;
   width: 120px;
-  /* changed from 90px to 120px */
   height: 120px;
-  /* changed from 90px to 120px */
-  border-radius: 0;
-  /* remove rounding so they meet flush */
   background-color: var(--primary-color);
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  border-radius: 0;
   position: absolute;
   cursor: grab;
   display: none;
   transition: left 0.2s, top 0.2s, transform 0.2s;
 }
 
-.puzzle-piece.active {
-  display: block;
-}
-
+.puzzle-piece.active,
 .puzzle-piece.placed {
   display: block;
 }
@@ -252,100 +253,62 @@ body {
   cursor: grabbing;
 }
 
-/* Top-left piece: no tabs on top/left; 
-   outward tab on the right; inward blank on bottom */
+/* Puzzle Piece Clip-Paths */
+
+/* Top-left: no tabs on top/left; outward tab on right; inward blank on bottom */
 #piece1 {
   width: 118px;
   height: 118px;
   clip-path: path("M0,0 
- H200
-      /* top edge: straight across */
-      V80
-      /* move down to where right tab begins */
-      c0, 15, 15, 15, 15, 30
-      /* outward tab arc */
-      c0, 15, -15, 15, -15, 30
-      /* close that tab arc */
-      V200
-      /* down to bottom-right corner */
-      H130
-      /* move left for bottom blank arc start */
-      c-15, 0, -15, 15, -15, 30
-      /* inward blank arc (half) */
-      c0, 15, 15, 15, 15, 30
-      /* second half of the blank arc */
-      H0
-      /* all the way to bottom-left corner */
-      Z");
-)
+ H200 V80 c0, 15, 15, 15, 15, 30 c0, 15, -15, 15, -15, 30 V200 H130 c-15, 0, -15, 15, -15, 30 c0, 15, 15, 15, 15, 30 H0 Z");
+
+    )
 }
 
-/* Top-right piece: no tabs on top/right; 
-     inward blank on left; inward blank on bottom */
+/* Top-right: no tabs on top/right; inward blank on left and bottom */
 #piece2 {
   width: 118px;
   height: 118px;
   clip-path: path("M0,0
- H200
-      /* top edge: straight across */
-      V200
-      /* right edge: straight down (no tab) */
-      H70
-      /* move left to bottom blank arc start */
-      c-15, 0, -15, 15, -15, 30 c0, 15, 15, 15, 15, 30 H0
-      /* all the way to bottom-left corner */
-      V110
-      /* up to left blank arc start */
-      c0, -15, 15, -15, 15, -30
-      /* inward blank arc on left edge */
-      c0, -15, -15, -15, -15, -30 V0 Z");
-)
+ H200 V200 H70 c-15, 0, -15, 15, -15, 30 c0, 15, 15, 15, 15, 30 H0 V110 c0, -15, 15, -15, 15, -30 c0, -15, -15, -15, -15, -30 V0 Z");
+
+    )
 }
 
-/* Bottom-left piece: top tab (matching #piece1’s bottom blank),
-     left edge no tab, right tab, bottom edge no tab */
+/* Bottom-left: top tab (matching #piece1’s bottom blank), no left tab; right tab; no bottom tab */
 #piece3 {
   width: 118px;
   height: 118px;
   clip-path: path("M0,0
- H130
-      /* top edge: move to top blank arc start */
-      c15, 0, 15, -15, 15, -30
-      /* outward tab (matching #piece1’s bottom blank) */
-      c0, -15, -15, -15, -15, -30 H0 V70
-      /* left edge: no tab, just straight if you prefer */
-      c0, 15, 15, 15, 15, 30
-      /* outward tab on left edge (if desired) */
-      c0, 15, -15, 15, -15, 30 V200 H200 V120
-      /* move up to right tab arc start */
-      c0, -15, -15, -15, -15, -30 c0, -15, 15, -15, 15, -30 V0 Z");
-)
+ H130 c15, 0, 15, -15, 15, -30 c0, -15, -15, -15, -15, -30 H0 V70 c0, 15, 15, 15, 15, 30 c0, 15, -15, 15, -15, 30 V200 H200 V120 c0, -15, -15, -15, -15, -30 c0, -15, 15, -15, 15, -30 V0 Z");
+
+    )
 }
 
-/* Bottom-right piece: top blank (matching #piece2’s bottom + #piece3’s top),
-     left blank (matching #piece3’s right tab), no tab bottom/right edges */
+/* Bottom-right: top blank (matching #piece2’s bottom + #piece3’s top), left blank, no bottom/right tabs */
 #piece4 {
   width: 118px;
   height: 118px;
   clip-path: path("M0,0
  H70 c15, 0, 15, -15, 15, -30 c0, -15, -15, -15, -15, -30 H0 V200 H200 V70 c0, -15, -15, -15, -15, -30 c0, -15, 15, -15, 15, -30 V0 Z");
-)
+
+    )
 }
 
-/* When the puzzle is completed, remove lines & highlights */
+/* Puzzle Completion */
 #puzzle-container.completed .grid-cell,
 #puzzle-container.completed .grid-cell.filled {
-  border: none;
   background-color: transparent;
+  border: none;
   transition: border 1s ease, background-color 1s ease;
 }
 
 #puzzle-container.completed .puzzle-piece {
   box-shadow: none;
-  /* remove puzzle piece shadow */
   transition: box-shadow 1s ease;
 }
 
+/* Puzzle Solved Overlay */
 #puzzle-solved-overlay {
   display: none;
   position: fixed;
@@ -359,12 +322,13 @@ body {
   color: #fff;
   padding: 1.5rem;
   border-radius: 10px;
-  z-index: 1000;
   text-align: center;
+  z-index: 1000;
 }
 
-/* Winner message (glass-effect) */
+/* Winner Message */
 #winner-message {
+  display: none;
   position: fixed;
   top: 0;
   left: 0;
@@ -372,7 +336,6 @@ body {
   height: 135%;
   background: rgba(0, 0, 0, 0.7);
   z-index: 999;
-  display: none;
   align-items: center;
   justify-content: center;
 }
@@ -395,10 +358,7 @@ body {
   animation: winnerPopup 0.6s ease forwards;
 }
 
-#winner-message h2 {
-  margin-bottom: 1rem;
-}
-
+#winner-message h2,
 #winner-message p {
   margin-bottom: 1rem;
 }
@@ -419,6 +379,7 @@ body {
   background-color: rgba(255, 255, 255, 0.8);
 }
 
+/* Social Share */
 #social-share {
   margin-top: 1rem;
 }
@@ -427,8 +388,8 @@ body {
   background-color: #fff;
   color: var(--primary-color);
   padding: 0.5rem 1rem;
-  border-radius: var(--border-radius);
   border: none;
+  border-radius: var(--border-radius);
   cursor: pointer;
   font-weight: 600;
   transition: background-color 0.3s;
@@ -438,12 +399,11 @@ body {
   background-color: rgba(255, 255, 255, 0.8);
 }
 
-/* Score and Timer (top right) */
+/* Score and Timer (Top Right) */
 #score-timer {
   position: absolute;
   top: 1rem;
   right: 1rem;
-  backdrop-filter: blur(10px);
   background: var(--glass-bg);
   border: 1px solid var(--glass-border);
   box-shadow: var(--box-shadow);
@@ -460,6 +420,7 @@ body {
   margin: 4px 0;
 }
 
+/* Winner Popup Animation */
 @keyframes winnerPopup {
   0% {
     opacity: 0;
@@ -477,28 +438,375 @@ body {
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 575.98px) {
+
+  /* Adjust body layout for phones */
   body {
     flex-direction: column;
+    padding: 1rem;
+  }
+
+  /* Title & Header */
+  #start-menu h1 {
+    font-size: 1.6rem;
+  }
+
+  #start-menu p {
+    font-size: 0.9rem;
+  }
+
+  /* Webcam or AR Container */
+  .webcam-wrapper {
+    width: 55%;
+    margin: 0 0 1rem 0;
+    padding: 1rem;
+  }
+
+  #ar-layers {
+    width: 50%;
+    height: 100px;
+  }
+
+  /* Score & Timer */
+  #score-timer {
+    top: 0.5rem;
+    right: 0.5rem;
+    font-size: 0.8rem;
+    padding: 0.4rem 0.6rem;
+  }
+
+  /* Puzzle Container: smaller cells & pieces */
+  #puzzle-container {
+    grid-template-columns: repeat(2, 60px);
+    grid-template-rows: repeat(2, 60px);
+    margin-top: 1rem;
+  }
+
+  .grid-cell,
+  .puzzle-piece {
+    width: 60px;
+    height: 60px;
+  }
+
+  #piece1,
+  #piece2,
+  #piece3,
+  #piece4 {
+    width: 58px;
+    height: 58px;
+  }
+
+  /* Winner message & overlays: scale text down */
+
+  #winner-message {
+    width: 100%;
+    height: 100%;
+    padding: 1rem;
+  }
+
+  #winner-content {
+    width: 55%;
+    margin: 0px 0 -10rem 220px;
+    padding: 1rem;
+    align-items: center;
+  }
+
+  #winner-message h2 {
+    font-size: 1.3rem;
+  }
+
+  #winner-message p {
+    font-size: 0.9rem;
+  }
+
+  #progress-bar {
+    width: 200px;
+    height: 15px;
+  }
+}
+
+/* =========================================
+   2) For Small Screens (576px to 767.98px)
+   ========================================= */
+@media (min-width: 576px) and (max-width: 767.98px) {
+  body {
+    flex-direction: column;
+    padding: 1.2rem;
+  }
+
+  #start-menu h1 {
+    font-size: 1.8rem;
+  }
+
+  #start-menu p {
+    font-size: 1rem;
   }
 
   .webcam-wrapper {
-    margin-right: 0;
-    margin-bottom: 20px;
+    width: 55%;
+    margin: 0 0 1rem 0;
+    padding: 1rem;
+  }
+
+  #ar-layers {
+    width: 50%;
+    height: 100px;
+  }
+
+  #score-timer {
+    top: 1rem;
+    right: 1rem;
+    font-size: 0.9rem;
+    padding: 0.5rem 0.8rem;
   }
 
   #puzzle-container {
-    grid-template-columns: repeat(2, 80px);
-    grid-template-rows: repeat(2, 80px);
+    grid-template-columns: repeat(2, 70px);
+    grid-template-rows: repeat(2, 70px);
   }
 
-  .grid-cell {
-    width: 80px;
-    height: 80px;
-  }
-
+  .grid-cell,
   .puzzle-piece {
-    width: 80px;
-    height: 80px;
+    width: 70px;
+    height: 70px;
+  }
+
+  #piece1,
+  #piece2,
+  #piece3,
+  #piece4 {
+    width: 70px;
+    height: 70px;
+  }
+
+  /* Winner message & overlays: scale text down */
+
+  #winner-message {
+    width: 100%;
+    height: 100%;
+    padding: 1rem;
+  }
+
+  #winner-content {
+    width: 55%;
+    margin: 0px 0 -10rem 220px;
+    padding: 1rem;
+    align-items: center;
+  }
+
+  #winner-message h2 {
+    font-size: 1.3rem;
+  }
+
+  #winner-message p {
+    font-size: 0.9rem;
+  }
+
+  #progress-bar {
+    width: 200px;
+    height: 15px;
+  }
+
+  #winner-content {
+    padding: 1.2rem;
+  }
+
+  #winner-message h2 {
+    font-size: 1.4rem;
+  }
+
+  #winner-message p {
+    font-size: 1rem;
+  }
+}
+
+/* =========================================
+   3) For Medium Screens (768px to 991.98px)
+   Tablets / Small Laptops
+   ========================================= */
+@media (min-width: 768px) and (max-width: 991.98px) {
+  body {
+    flex-direction: column;
+    padding: 1.5rem;
+  }
+
+  #start-menu h1 {
+    font-size: 2rem;
+  }
+
+  #start-menu p {
+    font-size: 1.1rem;
+  }
+
+  .webcam-wrapper {
+    width: 80%;
+    margin: 0 auto 1rem auto;
+    padding: 1rem 1.5rem;
+  }
+
+  #score-timer {
+    top: 1rem;
+    right: 1rem;
+    font-size: 1rem;
+    padding: 0.8rem 1rem;
+  }
+
+  /* Slightly bigger puzzle pieces */
+  #puzzle-container {
+    grid-template-columns: repeat(2, 90px);
+    grid-template-rows: repeat(2, 90px);
+    margin-top: 1rem;
+  }
+
+  .grid-cell,
+  .puzzle-piece {
+    width: 90px;
+    height: 90px;
+  }
+
+  #piece1,
+  #piece2,
+  #piece3,
+  #piece4 {
+    width: 90px;
+    height: 90px;
+  }
+
+  #winner-content {
+    padding: 1.5rem;
+  }
+
+  #winner-message h2 {
+    font-size: 1.6rem;
+  }
+
+  #winner-message p {
+    font-size: 1.1rem;
+  }
+}
+
+/* =========================================
+   4) For Large Screens (992px to 1199.98px)
+   ========================================= */
+@media (min-width: 992px) and (max-width: 1199.98px) {
+  body {
+    flex-direction: row;
+    padding: 2rem;
+  }
+
+  #start-menu h1 {
+    font-size: 2.4rem;
+  }
+
+  #start-menu p {
+    font-size: 1.2rem;
+  }
+
+  .webcam-wrapper {
+    width: 40%;
+    margin-right: 2rem;
+  }
+
+  #score-timer {
+    top: 1rem;
+    right: 1rem;
+    font-size: 1.1rem;
+    padding: 1rem 1.2rem;
+  }
+
+  /* Larger puzzle pieces */
+  #puzzle-container {
+    grid-template-columns: repeat(2, 110px);
+    grid-template-rows: repeat(2, 110px);
+    margin-top: 1rem;
+  }
+
+  .grid-cell,
+  .puzzle-piece {
+    width: 110px;
+    height: 110px;
+  }
+
+  #piece1,
+  #piece2,
+  #piece3,
+  #piece4 {
+    width: 110px;
+    height: 110px;
+  }
+
+  #winner-content {
+    padding: 2rem;
+  }
+
+  #winner-message h2 {
+    font-size: 1.8rem;
+  }
+
+  #winner-message p {
+    font-size: 1.2rem;
+  }
+}
+
+/* =========================================
+   5) For Extra Large Screens (min-width: 1200px)
+   ========================================= */
+@media (min-width: 1200px) {
+  body {
+    flex-direction: row;
+    padding: 2rem;
+  }
+
+  #start-menu h1 {
+    font-size: 2.8rem;
+  }
+
+  #start-menu p {
+    font-size: 1.3rem;
+  }
+
+  .webcam-wrapper {
+    width: 35%;
+    margin-right: 2rem;
+  }
+
+  #score-timer {
+    top: 1.2rem;
+    right: 1.2rem;
+    font-size: 1.2rem;
+    padding: 1.2rem 1.4rem;
+  }
+
+  /* Even larger puzzle pieces */
+  #puzzle-container {
+    grid-template-columns: repeat(2, 120px);
+    grid-template-rows: repeat(2, 120px);
+    margin-top: 1rem;
+  }
+
+  .grid-cell,
+  .puzzle-piece {
+    width: 120px;
+    height: 120px;
+  }
+
+  #piece1,
+  #piece2,
+  #piece3,
+  #piece4 {
+    width: 120px;
+    height: 120px;
+  }
+
+  #winner-content {
+    padding: 2.5rem;
+  }
+
+  #winner-message h2 {
+    font-size: 2rem;
+  }
+
+  #winner-message p {
+    font-size: 1.3rem;
   }
 }
