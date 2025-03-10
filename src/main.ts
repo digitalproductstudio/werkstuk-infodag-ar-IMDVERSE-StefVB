@@ -19,7 +19,7 @@ let lastVideoTime = -1;
 let results: GestureRecognizerResult | undefined;
 
 // ---------------------------
-// TIMER AND SCORE
+// TIMER, SCORE & IDLE TIMER
 // ---------------------------
 /**
  * Keep all timing in milliseconds (ms).
@@ -30,10 +30,13 @@ let startTime = 0;         // In ms
 let accumulatedTime = 0;   // In ms
 let timerInterval: number | undefined;
 let score = 0;
+let idleTimer: number | undefined;
+
+// NEW: Global game state flag. Idle checking is only active when true.
+let isGameActive = false;
 
 /** Update the on-screen timer every second */
 function updateTimer() {
-  // Total active time in ms = accumulatedTime + time since current session started
   const totalMs = accumulatedTime + (Date.now() - startTime);
   const seconds = Math.floor(totalMs / 1000);
   timerDisplay.innerText = `Tijd: ${seconds}s`;
@@ -44,7 +47,6 @@ function pauseTimer() {
   if (timerInterval) {
     clearInterval(timerInterval);
     timerInterval = undefined;
-    // Add the time from the current session to the accumulated total
     accumulatedTime += (Date.now() - startTime);
   }
 }
@@ -52,10 +54,72 @@ function pauseTimer() {
 /** Resume the timer (start a new active session) */
 function resumeTimer() {
   if (!timerInterval) {
-    // Mark a new "start time" for this session
     startTime = Date.now();
     timerInterval = window.setInterval(updateTimer, 1000);
   }
+}
+
+/**
+ * Resets the idle timer.
+ * If no interactivity is detected within 10 seconds,
+ * a popup will be shown and the page will reload.
+ * This check only runs when the game is active.
+ */
+function resetIdleTimer() {
+  if (!isGameActive) {
+    if (idleTimer !== undefined) {
+      clearTimeout(idleTimer);
+      idleTimer = undefined;
+    }
+    return;
+  }
+  if (idleTimer !== undefined) {
+    clearTimeout(idleTimer);
+  }
+  idleTimer = window.setTimeout(() => {
+    if (!isGameActive) return;
+    showGameStoppedPopup();
+    setTimeout(() => {
+      location.reload();
+    }, 2000);
+  }, 10000); // 10 seconds idle timeout
+}
+
+/**
+ * Sets up event listeners to monitor interactivity.
+ * These events include mouse movements, key presses, touch events,
+ * and any custom events (like 'handTrackingUpdate' from your gesture logic).
+ */
+function monitorInteractivity() {
+  const events = ["mousemove", "keydown", "touchstart", "handTrackingUpdate"];
+  events.forEach((event) => {
+    document.addEventListener(event, resetIdleTimer);
+  });
+  resetIdleTimer();
+}
+
+/**
+ * Creates and displays a temporary popup indicating the game has stopped.
+ */
+function showGameStoppedPopup() {
+  const popup = document.createElement("div");
+  popup.innerText = "Game stopped due to inactivity";
+  popup.style.position = "fixed";
+  popup.style.top = "50%";
+  popup.style.left = "50%";
+  popup.style.transform = "translate(-50%, -50%)";
+  popup.style.backgroundColor = "var(--primary-color) linear-gradient(115deg, " +
+      "rgba(30, 222, 104, 0.777), " +
+      "rgba(40, 139, 81, 0.7), " +
+      "rgba(29, 80, 40, 0.7))";
+  popup.style.color = "#fff";
+  popup.style.padding = "20px";
+  popup.style.borderRadius = "8px";
+  popup.style.zIndex = "1000";
+  document.body.appendChild(popup);
+  setTimeout(() => {
+    popup.remove();
+  }, 5000);
 }
 
 // ---------------------------
@@ -104,13 +168,12 @@ startButton.addEventListener("click", () => {
 });
 
 function startGame() {
-  // Reset timing
+  isGameActive = true; // Game is now active.
   accumulatedTime = 0;
   startTime = Date.now();
   score = 0;
   scoreDisplay.innerText = `Score: ${score}`;
 
-  // Pick a random image
   const randomIndex = Math.floor(Math.random() * availableImages.length);
   const selectedImage = availableImages.splice(randomIndex, 1)[0];
   currentLogoName = selectedImage.split("/").pop()?.split(".")[0] || "";
@@ -119,7 +182,6 @@ function startGame() {
 }
 
 function loadNextPiece() {
-  // If timer isn't running, resume it
   if (!timerInterval) {
     resumeTimer();
   }
@@ -165,24 +227,24 @@ function showPuzzleSolvedOverlay(finalPuzzle = false) {
   const overlay = document.getElementById("puzzle-solved-overlay") as HTMLDivElement;
   const textElem = document.getElementById("puzzle-solved-text") as HTMLParagraphElement;
   if (overlay && textElem) {
+    // Disable idle check while overlay is visible.
+    isGameActive = false;
+    
     const triviaText =
       triviaByLogo[currentLogoName] ||
       "Standaard weetje: tijdens de IMD opleiding leer je diverse programmeertalen zoals IOT, AR/VR, low-code platforms en AI-tools deskundig gebruiken.";
-
+      
     textElem.innerHTML = `
       Puzzel Opgelost!<br>
       Logo: <strong>${currentLogoName}</strong><br>
       ${triviaText}
     `;
     overlay.style.display = "block";
-
-    // Pause the timer while overlay is shown
     pauseTimer();
 
     setTimeout(() => {
       overlay.style.display = "none";
       if (!finalPuzzle) {
-        // Not the final puzzle, reset puzzle and load next
         resetPuzzle();
         if (availableImages.length > 0) {
           const randomIndex = Math.floor(Math.random() * availableImages.length);
@@ -191,16 +253,13 @@ function showPuzzleSolvedOverlay(finalPuzzle = false) {
           splitLogoImage(selectedImage);
           loadNextPiece();
           resumeTimer();
+          // Resume idle checking since the game is active again.
+          isGameActive = true;
         }
       } else {
-        // Final puzzle solved
         if (winnerMessage) {
           winnerMessage.classList.add("show");
-
-          // We already paused the timer, so 'accumulatedTime' is the complete active time
-          // DO NOT add (Date.now() - startTime) again
           const totalSeconds = Math.floor(accumulatedTime / 1000);
-
           const winnerText = document.querySelector("#winner-text") as HTMLParagraphElement;
           winnerText.innerHTML = `
             Je hebt alle puzzels voltooid in <strong>${totalSeconds} seconden</strong>
@@ -208,13 +267,13 @@ function showPuzzleSolvedOverlay(finalPuzzle = false) {
           `;
           playSound(winSound);
           if (timerInterval) clearInterval(timerInterval);
-
           scoreDisplay.innerText = `Score: ${score}`;
           const playAgainButton = document.querySelector("#play-again-button") as HTMLButtonElement;
           playAgainButton.onclick = () => {
             location.reload();
           };
           document.dispatchEvent(new CustomEvent("gameEnded"));
+          // Game remains inactive.
         }
       }
     }, 5000);
@@ -352,7 +411,6 @@ function trackHandPosition(results: GestureRecognizerResult) {
   const indexFinger = results.landmarks[0][8];
   if (!indexFinger) return;
 
-  // Convert from [0..1] to window coordinates
   const xPosWindow = indexFinger.x * window.innerWidth;
   const yPosWindow = indexFinger.y * window.innerHeight;
 
@@ -360,7 +418,6 @@ function trackHandPosition(results: GestureRecognizerResult) {
     return;
   }
 
-  // Move active puzzle piece
   if (selectedPiece) {
     const containerRect = puzzleContainer.getBoundingClientRect();
     const xPos = xPosWindow - containerRect.left;
@@ -372,14 +429,12 @@ function trackHandPosition(results: GestureRecognizerResult) {
     checkIfInsideGrid(selectedPiece);
   }
 
-  // Dispatch event for custom cursor
   document.dispatchEvent(
     new CustomEvent("handTrackingUpdate", {
       detail: { x: xPosWindow, y: yPosWindow },
     })
   );
 
-  // Simple "tap" gesture logic: if the finger moves down quickly
   if (lastFingerY !== 0 && !clickCooldown) {
     if ((yPosWindow - lastFingerY) > 20) {
       document.dispatchEvent(new CustomEvent("handClick"));
@@ -416,7 +471,6 @@ function checkIfInsideGrid(piece: HTMLDivElement) {
       pieceCenterY >= cellRect.top &&
       pieceCenterY <= cellRect.bottom
     ) {
-      // If the correct cell is not yet occupied, place the piece
       if (!occupiedCells.has(cell.id) && piece.dataset.target === cell.id) {
         occupiedCells.add(cell.id);
         cell.classList.remove("highlight");
@@ -478,6 +532,11 @@ function splitLogoImage(imageSrc: string) {
     console.error("Error loading image:", error);
   };
 }
+
+// Start monitoring for interactivity when the page loads
+window.addEventListener("load", () => {
+  monitorInteractivity();
+});
 
 // Automatically initialize the camera and gesture recognizer on page load
 window.addEventListener("load", initWebcamAndGesture);
