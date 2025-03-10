@@ -103,7 +103,9 @@ function monitorInteractivity() {
  */
 function showGameStoppedPopup() {
   const popup = document.createElement("div");
-  popup.innerText = "Game stopped due to inactivity";
+  popup.innerText = "Gestopt vanwege inactiviteit. Pagina wordt opnieuw geladen...";
+  popup.style.width = "300px";
+  popup.style.textAlign = "center";
   popup.style.position = "fixed";
   popup.style.top = "50%";
   popup.style.left = "50%";
