@@ -315,11 +315,11 @@ body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: var(--primary-color) linear-gradient(115deg,
-      rgba(56, 239, 125, 0.7),
-      rgba(39, 174, 96, 0.7),
-      rgba(29, 80, 40, 0.7));
   color: #fff;
+  background: var(--primary-color) linear-gradient(115deg,
+      rgba(30, 222, 104, 0.777),
+      rgba(40, 139, 81, 0.7),
+      rgba(29, 80, 40, 0.7));
   padding: 1.5rem;
   border-radius: 10px;
   text-align: center;
@@ -334,7 +334,10 @@ body {
   left: 0;
   width: 135%;
   height: 135%;
-  background: rgba(0, 0, 0, 0.7);
+  background: var(--primary-color) linear-gradient(115deg,
+      rgba(30, 222, 104, 0.777),
+      rgba(40, 139, 81, 0.7),
+      rgba(29, 80, 40, 0.7));
   z-index: 999;
   align-items: center;
   justify-content: center;
@@ -346,16 +349,15 @@ body {
 
 #winner-content {
   backdrop-filter: blur(14px);
-  background: var(--primary-color) linear-gradient(115deg,
-      rgba(56, 239, 125, 0.7),
-      rgba(39, 174, 96, 0.7),
-      rgba(29, 80, 40, 0.7));
-  border: 1px solid var(--glass-border);
-  box-shadow: var(--box-shadow);
-  border-radius: var(--border-radius);
   padding: 2rem;
   text-align: center;
   animation: winnerPopup 0.6s ease forwards;
+  position: fixed;
+  /* Or absolute, depending on your needs */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  /* Centers the element */
 }
 
 #winner-message h2,
