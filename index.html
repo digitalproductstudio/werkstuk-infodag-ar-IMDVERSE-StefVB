@@ -12,8 +12,8 @@
   <!-- Canvas Confetti -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js" defer></script>
   <title>IMDVERSE</title>
-  <script type="module" crossorigin src="/werkstuk-infodag-ar-IMDVERSE-StefVB/assets/index-DHFa_qWg.js"></script>
-  <link rel="stylesheet" crossorigin href="/werkstuk-infodag-ar-IMDVERSE-StefVB/assets/index-CKyq9fJG.css">
+  <script type="module" crossorigin src="/werkstuk-infodag-ar-IMDVERSE-StefVB/assets/index-DQ6W0xuc.js"></script>
+  <link rel="stylesheet" crossorigin href="/werkstuk-infodag-ar-IMDVERSE-StefVB/assets/index-BY2wUlWG.css">
 </head>
 
 <body>
@@ -21,13 +21,24 @@
 
   <!-- Startmenu overlay -->
   <div id="start-menu">
-    <h1>Welkom bij IMD Puzzel Game</h1>
-    <p>Gebruik handtracking om de puzzelstukken op de juiste plaats te leggen.</p>
-    <p>
-      Richt je hand op het puzzelstuk en beweeg naar het corresponderende
-      vakje. Veel succes!
-    </p>
-    <button id="start-button">Start Spel</button>
+    <h1>Welkom bij IMDVERSE: De Puzzel Game</h1>
+    <p>De bedoeling van het spel is om met je hand de puzzelstukken op de juiste plaats te leggen.</p>
+    <p>Richt je hand op de cursor en beweeg naar infoknop voor meer informatie over het spel of ga naar de startknop en start het spel. Indien dit niet al te best gaat kan de muis gebruikt worden Veel succes!</p>
+    <p>Deze game is gemaakt door Stef Van Boven Student aan de opleiding Interactive Media Development.</p>
+    <div class="buttons">
+      <button id="start-button">Start Spel</button>
+      <button id="info-button">Info</button>
+    </div>
+  </div>
+
+  <!-- info overlay -->
+  <div id="info-overlay">
+    <p>IMDVERSE is een interactieve puzzelgame die gebruik maakt van handtracking.</p>
+    <p>Er zijn 3 puzzels die je kan oplossen.</p>
+    <p>Elke puzzel bestaat uit 4 stukken.</p>
+    <p>Je kan de puzzelstukken verplaatsen door je hand te bewegen.</p>
+    <p>Als je een puzzelstuk op de juiste plaats legt, hoor je een geluid.</p>
+    <button id="close-info-button">Sluit</button>
   </div>
 
   <!-- Webcam container -->
