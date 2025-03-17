@@ -110,7 +110,7 @@ function showGameStoppedPopup() {
   popup.style.top = "50%";
   popup.style.left = "50%";
   popup.style.transform = "translate(-50%, -50%)";
-  popup.style.backgroundColor = "var(--primary-color) linear-gradient(115deg, " +
+  popup.style.background = "#4caf50 linear-gradient(115deg, " +
       "rgba(30, 222, 104, 0.777), " +
       "rgba(40, 139, 81, 0.7), " +
       "rgba(29, 80, 40, 0.7))";
@@ -120,7 +120,8 @@ function showGameStoppedPopup() {
   popup.style.zIndex = "1000";
   document.body.appendChild(popup);
   setTimeout(() => {
-    popup.remove();
+      popup.remove();
+      location.reload(); //Added reload here.
   }, 5000);
 }
 
