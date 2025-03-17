@@ -15,6 +15,10 @@
   --text-color: #fff;
   --border-radius: 14px;
   --box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  /* Increase button size variables */
+  --button-padding-y: 0.8rem;
+  --button-padding-x: 1.8rem;
+  --button-font-size: 1.1rem;
 }
 
 /* Global Reset */
@@ -84,8 +88,8 @@ body {
   color: #fff;
   border: none;
   border-radius: var(--border-radius);
-  padding: 0.75rem 1.5rem;
-  font-size: 1rem;
+  padding: var(--button-padding-y) var(--button-padding-x);
+  font-size: var(--button-font-size);
   cursor: pointer;
   margin-top: 1rem;
   transition: background-color 0.3s;
@@ -125,7 +129,8 @@ body {
   color: var(--primary-color);
   border: none;
   border-radius: var(--border-radius);
-  padding: 0.5rem 1rem;
+  padding: 0.7rem 1.4rem;
+  /* Adjusted for consistency */
   font-size: 1rem;
   cursor: pointer;
   transition: background-color 0.3s;
@@ -158,7 +163,6 @@ body {
   margin-bottom: 1rem;
 }
 
-/* Live View Button */
 #liveView button {
   position: relative;
   z-index: 200;
@@ -166,8 +170,8 @@ body {
   color: #fff;
   border: none;
   border-radius: var(--border-radius);
-  padding: 0.5rem 1rem;
-  font-size: 1rem;
+  padding: var(--button-padding-y) var(--button-padding-x);
+  font-size: var(--button-font-size);
   cursor: pointer;
   transition: background-color 0.3s;
 }
