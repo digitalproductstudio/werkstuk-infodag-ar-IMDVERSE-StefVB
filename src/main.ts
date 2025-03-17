@@ -149,7 +149,9 @@ const timerDisplay = document.querySelector("#timer") as HTMLDivElement;
 const scoreDisplay = document.querySelector("#score") as HTMLDivElement;
 const startMenu = document.querySelector("#start-menu") as HTMLDivElement;
 const startButton = document.querySelector("#start-button") as HTMLButtonElement;
+const startSound = document.querySelector("#start-sound") as HTMLAudioElement;
 const placeSound = document.querySelector("#place-sound") as HTMLAudioElement;
+const correctSound = document.querySelector("#correct-sound") as HTMLAudioElement;
 const winSound = document.querySelector("#win-sound") as HTMLAudioElement;
 
 // Puzzle pieces
@@ -167,6 +169,7 @@ pieces.forEach((piece, idx) => {
 startButton.addEventListener("click", () => {
   document.dispatchEvent(new CustomEvent("gameStarted"));
   startMenu.style.display = "none";
+  playSound(startSound);
   startGame();
 });
 
@@ -207,6 +210,7 @@ function checkForPuzzleCompletion() {
   if (placedPieces === gridCells.length) {
     puzzlesSolved++;
     fadeOutPuzzleLines();
+    playSound(correctSound);
     setTimeout(() => {
       launchConfetti();
       const isFinalPuzzle = availableImages.length === 0;
