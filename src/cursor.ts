@@ -55,14 +55,14 @@ document.addEventListener("handTrackingUpdate", event => {
     // Invert the X coordinate
     newX = containerRect.right - (newX - containerRect.left) - cursorWidth;
 
-    // Constrain X position
+    // Constrain X position within the container
     if (newX < containerRect.left) {
       newX = containerRect.left;
     } else if (newX + cursorWidth > containerRect.right) {
       newX = containerRect.right - cursorWidth;
     }
 
-    // Constrain Y position
+    // Constrain Y position within the container
     if (newY < containerRect.top) {
       newY = containerRect.top;
     } else if (newY + cursorHeight > containerRect.bottom) {
@@ -80,6 +80,26 @@ document.addEventListener("handTrackingUpdate", event => {
     // Update cursor position with doubly smoothed values
     customCursor.style.left = smoothedX2 + "px";
     customCursor.style.top = smoothedY2 + "px";
+
+    // **Ensure the cursor stays within the viewport even when hand tracking is outside the container**
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+
+    if (smoothedX2 < 0) {
+      smoothedX2 = 0;
+      customCursor.style.left = "0px";
+    } else if (smoothedX2 + cursorWidth > viewportWidth) {
+      smoothedX2 = viewportWidth - cursorWidth;
+      customCursor.style.left = smoothedX2 + "px";
+    }
+
+    if (smoothedY2 < 0) {
+      smoothedY2 = 0;
+      customCursor.style.top = "0px";
+    } else if (smoothedY2 + cursorHeight > viewportHeight) {
+      smoothedY2 = viewportHeight - cursorHeight;
+      customCursor.style.top = smoothedY2 + "px";
+    }
   }
 });
 

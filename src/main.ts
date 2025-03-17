@@ -419,11 +419,7 @@ function trackHandPosition(results: GestureRecognizerResult) {
 
   // Determine x-coordinate mirroring logic
   const containerRect = puzzleContainer.getBoundingClientRect();
-
-  // Mirror the x-coordinate to match the user's perspective.
   const mirroredXPosRaw = window.innerWidth - xPosRaw;
-
-  // Calculate the x and y positions relative to the puzzle container.
   const xPos = mirroredXPosRaw - containerRect.left;
   const yPos = yPosRaw - containerRect.top;
 
@@ -434,8 +430,7 @@ function trackHandPosition(results: GestureRecognizerResult) {
       const pieceHalfHeight = selectedPiece.offsetHeight / 2;
       selectedPiece.style.left = `${xPos - pieceHalfWidth}px`;
       selectedPiece.style.top = `${yPos - pieceHalfHeight}px`;
-
-      checkIfInsideGrid(selectedPiece);
+      // Removed automatic snapping – piece placement now occurs on explicit hand click.
   }
 
   document.dispatchEvent(
@@ -445,7 +440,7 @@ function trackHandPosition(results: GestureRecognizerResult) {
   );
 
   if (lastFingerY !== 0 && !clickCooldown) {
-      if ((yPosRaw - lastFingerY) > 20) {
+      if ((yPosRaw - lastFingerY) > 40) { // Increased threshold from 20 to 40 pixels
           document.dispatchEvent(new CustomEvent("handClick"));
           clickCooldown = true;
           setTimeout(() => {
@@ -583,18 +578,18 @@ if (closeInfoButton) {
   closeInfoButton.addEventListener("click", hideInfoOverlay);
 }
 
-// Hand click event: check if the hand click occurs over the info button
+// Hand click event: check if the hand click occurs over the info button, otherwise drop the piece.
 document.addEventListener("handClick", () => {
-  if (infoButton) {
-    const rect = infoButton.getBoundingClientRect();
-    if (
-      handCursorX >= rect.left &&
-      handCursorX <= rect.right &&
-      handCursorY >= rect.top &&
-      handCursorY <= rect.bottom
-    ) {
+  const infoRect = infoButton.getBoundingClientRect();
+  if (
+      handCursorX >= infoRect.left &&
+      handCursorX <= infoRect.right &&
+      handCursorY >= infoRect.top &&
+      handCursorY <= infoRect.bottom
+  ) {
       showInfoOverlay();
-    }
+  } else if (selectedPiece) {
+      checkIfInsideGrid(selectedPiece);
   }
 });
 
