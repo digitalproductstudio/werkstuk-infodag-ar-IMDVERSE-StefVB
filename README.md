@@ -61,7 +61,7 @@ Speel met de webcam en handtracking en ontdek de wereld van IMD.
 -HTML
 -CSS
 - TypeScript
--Three.js
+- Three.js
 - Vite.js
 - Media pipe
 - Canvas Confetti (https://www.npmjs.com/package/canvas-confetti)
