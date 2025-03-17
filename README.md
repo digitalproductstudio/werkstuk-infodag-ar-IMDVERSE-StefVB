@@ -21,9 +21,12 @@ Website: [IMDVERSE](https://digitalproductstudio.github.io/werkstuk-infodag-ar-I
 ## Beschrijving
 Speel met de webcam en handtracking en ontdek de wereld van IMD.
 
-- **Handtracking + INFO**: Wijs met je hand naar de cursor en ga naar de infoknop voor meer informatie over het spel of ga naar de startknop en start het spel. Als dit niet goed gaat, kun je de muis gebruiken.
+- **Handtracking + INFO**: Richt je hand op de cursor en beweeg naar de infoknop voor meer
+      informatie over het spel of ga naar de startknop en start het spel en tik met je wijsvinger voor interactie met de knoppen.
+      Indien
+      dit niet al te best gaat kan de muis gebruikt worden. Veel succes!
 - **Handtracking**: Speel het spel met handtracking
-- **Handtracking**: Je kunt de puzzelstukjes verplaatsen door je hand te bewegen.
+- **Handtracking**: Je kunt de puzzelstukjes verplaatsen door je hand te bewegen en te tikken met je hand of sluit je hand om de puzzelstukken te plaatsen.
 - **Webcam**: Gebruik je webcam om het spel te spelen
 - **Puzzelspel**: Speel een leuk puzzelspel
 - **Puzzelspel**: Er zijn 3 puzzels die je kunt oplossen.
