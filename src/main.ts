@@ -413,40 +413,47 @@ function trackHandPosition(results: GestureRecognizerResult) {
   const indexFinger = results.landmarks[0][8];
   if (!indexFinger) return;
 
-  const xPosWindow = indexFinger.x * window.innerWidth;
-  const yPosWindow = indexFinger.y * window.innerHeight;
+  // Calculate raw coordinates
+  const xPosRaw = indexFinger.x * window.innerWidth;
+  const yPosRaw = indexFinger.y * window.innerHeight;
 
-  if (xPosWindow < 10 && yPosWindow < 10) {
-    return;
-  }
+  // Determine x-coordinate mirroring logic
+  const containerRect = puzzleContainer.getBoundingClientRect();
+
+  // Mirror the x-coordinate to match the user's perspective.
+  const mirroredXPosRaw = window.innerWidth - xPosRaw;
+
+  // Calculate the x and y positions relative to the puzzle container.
+  const xPos = mirroredXPosRaw - containerRect.left;
+  const yPos = yPosRaw - containerRect.top;
+
+  if (xPosRaw < 10 && yPosRaw < 10) return;
 
   if (selectedPiece) {
-    const containerRect = puzzleContainer.getBoundingClientRect();
-    const xPos = xPosWindow - containerRect.left;
-    const yPos = yPosWindow - containerRect.top;
-    const pieceHalfWidth = selectedPiece.offsetWidth / 2;
-    const pieceHalfHeight = selectedPiece.offsetHeight / 2;
-    selectedPiece.style.left = `${xPos - pieceHalfWidth}px`;
-    selectedPiece.style.top = `${yPos - pieceHalfHeight}px`;
-    checkIfInsideGrid(selectedPiece);
+      const pieceHalfWidth = selectedPiece.offsetWidth / 2;
+      const pieceHalfHeight = selectedPiece.offsetHeight / 2;
+      selectedPiece.style.left = `${xPos - pieceHalfWidth}px`;
+      selectedPiece.style.top = `${yPos - pieceHalfHeight}px`;
+
+      checkIfInsideGrid(selectedPiece);
   }
 
   document.dispatchEvent(
-    new CustomEvent("handTrackingUpdate", {
-      detail: { x: xPosWindow, y: yPosWindow },
-    })
+      new CustomEvent("handTrackingUpdate", {
+          detail: { x: xPosRaw, y: yPosRaw },
+      })
   );
 
   if (lastFingerY !== 0 && !clickCooldown) {
-    if ((yPosWindow - lastFingerY) > 20) {
-      document.dispatchEvent(new CustomEvent("handClick"));
-      clickCooldown = true;
-      setTimeout(() => {
-        clickCooldown = false;
-      }, 500);
-    }
+      if ((yPosRaw - lastFingerY) > 20) {
+          document.dispatchEvent(new CustomEvent("handClick"));
+          clickCooldown = true;
+          setTimeout(() => {
+              clickCooldown = false;
+          }, 500);
+      }
   }
-  lastFingerY = yPosWindow;
+  lastFingerY = yPosRaw;
 }
 
 function highlightTargetCell(piece: HTMLDivElement) {
